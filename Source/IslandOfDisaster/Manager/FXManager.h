@@ -1,0 +1,59 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "FXManager.generated.h"
+
+class UNiagaraSystem;
+class UNiagaraComponent;
+
+UENUM(BlueprintType)
+enum EFXType {
+	FX_Asteroid		UMETA(DisplayName = "FX_Asteroid"),
+	Gas				UMETA(DisplayName = "Gas"),
+	Rain			UMETA(DisplayName = "Rain"),
+	ShootingStar	UMETA(DisplayName = "ShootingStar"),
+	Star			UMETA(DisplayName = "Star"),
+	Wind			UMETA(DisplayName = "Wind")
+};
+
+/**
+ * 
+ */
+UCLASS(Blueprintable, BlueprintType)
+class ISLANDOFDISASTER_API UFXManager : public UObject
+{
+	GENERATED_BODY()
+	
+public:
+	void Tick(const UWorld* World);
+
+	TObjectPtr<UNiagaraSystem> GetFX(EFXType Type);
+	void SetComponent(EFXType Type, TObjectPtr<UNiagaraComponent> Component);
+	TObjectPtr<UNiagaraComponent> GetComponent(EFXType Type);
+	
+	void SpawnFX(const UWorld* World, EFXType Type, FVector Pos);
+	void SetActiveFX(EFXType Type, bool Value);
+
+
+	UPROPERTY(EditAnywhere, Category=FX)
+	TObjectPtr<UNiagaraSystem> NS_Asteroid;
+	UPROPERTY(EditAnywhere, Category=FX)
+	TObjectPtr<UNiagaraSystem> NS_Gas;
+	UPROPERTY(EditAnywhere, Category=FX)
+	TObjectPtr<UNiagaraSystem> NS_Rain;
+	UPROPERTY(EditAnywhere, Category=FX)
+	TObjectPtr<UNiagaraSystem> NS_ShootingStar;
+	UPROPERTY(EditAnywhere, Category=FX)
+	TObjectPtr<UNiagaraSystem> NS_Star;
+	UPROPERTY(EditAnywhere, Category=FX)
+	TObjectPtr<UNiagaraSystem> NS_Wind;
+
+private:
+	TObjectPtr<UNiagaraComponent> NSC_Rain;
+	TObjectPtr<UNiagaraComponent> NSC_ShootingStar;
+	TObjectPtr<UNiagaraComponent> NSC_Star;
+	TObjectPtr<UNiagaraComponent> NSC_Wind;
+
+};
