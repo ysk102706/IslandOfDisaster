@@ -33,8 +33,11 @@ void ASpawner::Spawn()
 			int Rand = Random(0, 10), Idx = 0;
 			
 			if (Rand <= UManagers::Get(GetWorld())->Disaster()->Disaster->AnimalEpidemicPercent) Idx = 1;
-			
-			auto MultiItem = Cast<AMultipleItem>(GetWorld()->SpawnActor(MultiItems[0], &GetActorLocation(), &GetActorRotation()));
+
+			FVector Pos = GetActorLocation();
+			FRotator Rot = GetActorRotation();
+
+			auto MultiItem = Cast<AMultipleItem>(GetWorld()->SpawnActor(MultiItems[0], &Pos, &Rot));
 			MultiItem->AddToRoot();
 
 			MultiItem->Spawner = this;
