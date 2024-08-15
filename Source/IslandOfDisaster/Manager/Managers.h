@@ -13,6 +13,7 @@ class ACPP_Player;
 class AWeather;
 class ATimeOfDay;
 class UFXManager;
+class USoundManager;
 
 /**
  * 
@@ -30,6 +31,7 @@ public:
 	UDataLoadManager* DataLoad();
 	UDisasterManager* Disaster();
 	UFXManager* FX();
+	USoundManager* Sound();
 
 	void SetPlayer(ACPP_Player* Player);
 	TObjectPtr<ACPP_Player> Player();
@@ -48,11 +50,14 @@ private:
 	TSubclassOf<UDisasterManager> DisasterManagerClass;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UFXManager> FXManagerClass;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<USoundManager> SoundManagerClass;
 	
 	TObjectPtr<UUIManager> UIManagerObject;
 	TObjectPtr<UDataLoadManager> DataLoadManagerObject;
 	TObjectPtr<UDisasterManager> DisasterManagerObject;
 	TObjectPtr<UFXManager> FXManagerObject;
+	TObjectPtr<USoundManager> SoundManagerObject;
 	TObjectPtr<ACPP_Player> PlayerObject;
 
 	TObjectPtr<AWeather> WeatherObject;

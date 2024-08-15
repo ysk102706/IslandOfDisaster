@@ -9,6 +9,8 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "../Manager/Managers.h"
 #include "Player/CPP_Player.h"
+#include "../Manager/FXManager.h"
+#include "../Manager/SoundManager.h"
 
 AWeather::AWeather()
 {
@@ -45,7 +47,8 @@ void AWeather::Tick(float DeltaTime)
 		SetDensityOffset(Lerp(CurrentDensityOffset, TargetDensityOffset, LerpRatio));
 
 		if (IsRainClear && LerpRatio >= 0.6f) {
-			//UManagers::Get(GetWorld())->Player()->SetActiveRain(false);
+			UManagers::Get(GetWorld())->FX()->SetActiveFX(GetWorld(), EFXType::FX_Rain, false);
+			UManagers::Get(GetWorld())->Sound()->StopLoopSound(ESound::S_Rain);
 			
 			IsRainClear = false;
 			IsRain = false;
@@ -58,7 +61,10 @@ void AWeather::Tick(float DeltaTime)
 
 			IsLerp = false;
 
-			//if (IsRain) UManagers::Get(GetWorld())->Player()->SetActiveRain(true);
+			if (IsRain) {
+				UManagers::Get(GetWorld())->FX()->SetActiveFX(GetWorld(), EFXType::FX_Rain, true);
+				UManagers::Get(GetWorld())->Sound()->PlayLoopSound(ESound::S_Rain);
+			}
 		}
 	}
 }
