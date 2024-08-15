@@ -23,6 +23,7 @@
 #include "../Item/Item.h"
 #include "../Item/MultipleItem.h"
 #include "../Item/Inventory.h"
+#include "../../Manager/SoundManager.h"
 
 ACPP_Player::ACPP_Player()
 {
@@ -66,11 +67,13 @@ void ACPP_Player::BeginPlay()
 
 	Cast<UManagers>(GetGameInstance())->UI()->ShowWidget(EWidgetType::PlayerInfo);
 
-	UManagers::Get(GetWorld())->FX()->SpawnFX(GetWorld(), EFXType::Star, FVector(0, 0, 0));
-	UManagers::Get(GetWorld())->FX()->SetActiveFX(EFXType::Star, false);
+	UManagers::Get(GetWorld())->FX()->SpawnFX(GetWorld(), EFXType::FX_Star, FVector(0, 0, 0));
+	UManagers::Get(GetWorld())->FX()->SetActiveFX(GetWorld(), EFXType::FX_Star, false);
 
 	JumpStartTimer = 0;
 	JumpEndTimer = 0;
+
+	UManagers::Get(GetWorld())->Sound()->Init(GetWorld());
 }
 
 void ACPP_Player::Tick(float DeltaTime)

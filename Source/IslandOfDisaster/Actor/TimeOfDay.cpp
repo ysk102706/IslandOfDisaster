@@ -50,7 +50,7 @@ void ATimeOfDay::TimeToSunRotation(int Hours, int Minutes)
 		ReRender(*(SunLight->GetLightComponent()));
 		ReRender(*(MoonLight->GetLightComponent()));
 
-		UManagers::Get(GetWorld())->FX()->SetActiveFX(EFXType::Star, false);
+		UManagers::Get(GetWorld())->FX()->SetActiveFX(GetWorld(), EFXType::FX_Star, false);
 	}
 	else if (Hours == 18 && Minutes == 15) {
 		SunLight->GetLightComponent()->bAffectsWorld = false;
@@ -61,7 +61,7 @@ void ATimeOfDay::TimeToSunRotation(int Hours, int Minutes)
 		ReRender(*(SunLight->GetLightComponent()));
 		ReRender(*(MoonLight->GetLightComponent()));
 
-		UManagers::Get(GetWorld())->FX()->SetActiveFX(EFXType::Star, true);
+		UManagers::Get(GetWorld())->FX()->SetActiveFX(GetWorld(), EFXType::FX_Star, true);
 	}
 
 	SunLight->SetActorRotation(FRotator((Hours - 6) * -15 + Minutes * -0.25f, 0, 0));

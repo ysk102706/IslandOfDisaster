@@ -11,11 +11,11 @@ class UNiagaraComponent;
 UENUM(BlueprintType)
 enum EFXType {
 	FX_Asteroid		UMETA(DisplayName = "FX_Asteroid"),
-	Gas				UMETA(DisplayName = "Gas"),
-	Rain			UMETA(DisplayName = "Rain"),
-	ShootingStar	UMETA(DisplayName = "ShootingStar"),
-	Star			UMETA(DisplayName = "Star"),
-	Wind			UMETA(DisplayName = "Wind")
+	FX_Gas				UMETA(DisplayName = "Gas"),
+	FX_Rain			UMETA(DisplayName = "Rain"),
+	FX_ShootingStar	UMETA(DisplayName = "ShootingStar"),
+	FX_Star			UMETA(DisplayName = "Star"),
+	FX_Wind			UMETA(DisplayName = "Wind")
 };
 
 /**
@@ -34,7 +34,7 @@ public:
 	TObjectPtr<UNiagaraComponent> GetComponent(EFXType Type);
 	
 	void SpawnFX(const UWorld* World, EFXType Type, FVector Pos);
-	void SetActiveFX(EFXType Type, bool Value);
+	void SetActiveFX(const UWorld* World, EFXType Type, bool Value);
 
 
 	UPROPERTY(EditAnywhere, Category=FX)
