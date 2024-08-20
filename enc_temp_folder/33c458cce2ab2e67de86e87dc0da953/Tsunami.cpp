@@ -12,7 +12,7 @@ void ATsunami::Effect1()
 		int SpawnCount = Random(3, 7);
 
 		for (int i = 0; i < SpawnCount; i++) {
-			FVector Position = RandomCircle(SpawnPos, SpawnRange);
+			FVector Position = RandomCircle(SpawnPos, 200);
 			FRotator Rotation = FRotator(0, Random(0, 360), 0);
 
 			GetWorld()->SpawnActor(Fish, &Position, &Rotation);
