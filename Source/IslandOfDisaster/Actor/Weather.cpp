@@ -28,6 +28,7 @@ void AWeather::BeginPlay()
 	PostProcessVolume->Settings.bOverride_AutoExposureBias = true;
 
 	DMI = UMaterialInstanceDynamic::Create(M_Cloud, this);
+	DMI->AddToRoot();
 	VolumetricCloud->FindComponentByClass<UVolumetricCloudComponent>()->SetMaterial(DMI);
 
 	CurrentRayleighScattering = FLinearColor(0.175287f, 0.409607f, 1);

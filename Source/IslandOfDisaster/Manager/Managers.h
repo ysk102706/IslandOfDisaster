@@ -18,13 +18,14 @@ class USoundManager;
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable, BlueprintType)
 class ISLANDOFDISASTER_API UManagers : public UGameInstance
 {
 	GENERATED_BODY()
 	
 public:
 	UManagers();
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "InitManger"))
 	void InitManager(const UWorld* World);
 	
 	UUIManager* UI();
