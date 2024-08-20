@@ -47,6 +47,9 @@ void ACPP_Player::BeginPlay()
 	Super::BeginPlay();
 
 	UManagers::Get(GetWorld())->SetPlayer(this);
+
+	SetActorLocation(FVector(62250.0, 40000.0, 990));
+
 	Inventory = NewObject<AInventory>();
 	Inventory->AddToRoot();
 
