@@ -37,7 +37,7 @@ void ASpawner::Spawn()
 			FVector Pos = GetActorLocation();
 			FRotator Rot = GetActorRotation();
 
-			auto MultiItem = Cast<AMultipleItem>(GetWorld()->SpawnActor(MultiItems[Idx], &Pos, &Rot));
+			auto MultiItem = Cast<AMultipleItem>(GetWorld()->SpawnActor(MultiItems[0], &Pos, &Rot));
 			MultiItem->AddToRoot();
 
 			MultiItem->Spawner = this;
