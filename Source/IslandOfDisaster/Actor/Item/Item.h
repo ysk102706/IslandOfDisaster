@@ -12,13 +12,13 @@ UCLASS()
 class ISLANDOFDISASTER_API AItem : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	AItem();
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	void Init(UTexture2D* ItemTexture, FString ItemName, FString ItemDescription, int ManufactureCount, bool IsItemErection, bool IsItemUsable, int ItemDurability, bool IsItemExit);
-	
+
 	void Focused();
 	void NotFocused();
 	bool Picked();
@@ -27,26 +27,26 @@ public:
 	void ConstructPoint(bool Value);
 
 	void DestroyActor();
-	
+
 	void SetPhysics(bool Value);
 	void SetWorldLocation(FVector Pos);
 
-	UPROPERTY(EditAnywhere, Category=Materials)
-	class UMaterialInterface* DefaultMaterial;
 	UPROPERTY(EditAnywhere, Category = Materials)
-	class UMaterialInterface* FocusedMaterial;
+	TArray<TObjectPtr<UMaterialInterface>> DefaultMaterials;
 	UPROPERTY(EditAnywhere, Category = Materials)
-	class UMaterialInterface* ConstructAvailableMaterial;
+	TArray<TObjectPtr<UMaterialInterface>> FocusedMaterials;
 	UPROPERTY(EditAnywhere, Category = Materials)
-	class UMaterialInterface* ConstructUnavailableMaterial;
+	TObjectPtr<UMaterialInterface> ConstructAvailableMaterial;
+	UPROPERTY(EditAnywhere, Category = Materials)
+	TObjectPtr<UMaterialInterface> ConstructUnavailableMaterial;
 
 	UPROPERTY(EditAnywhere)
 	int Id;
 	UPROPERTY(EditAnywhere)
 	FString ConstructAvailablePlaceName;
-	
+
 	TObjectPtr<UTexture2D> Texture;
-	
+
 	TObjectPtr<ASpawner> Spawner;
 
 	FString Name;

@@ -290,7 +290,7 @@ void ACPP_Player::MultipleItemCheckRayCast()
 		if (FocusedMultipleItem && FocusedMultipleItem != MultipleItem) FocusedMultipleItem->NotFocused();
 		FocusedMultipleItem = MultipleItem;
 	}
-	else if (FocusedItem) {
+	else if (FocusedMultipleItem) {
 		FocusedMultipleItem->NotFocused();
 		FocusedMultipleItem = nullptr;
 	}

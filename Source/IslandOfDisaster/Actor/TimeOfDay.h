@@ -10,13 +10,14 @@ UCLASS()
 class ISLANDOFDISASTER_API ATimeOfDay : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	ATimeOfDay();
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
 	void TimeToSunRotation(int Hours, int Minutes);
+	void NightLighting();
 
 	void ReRender(ULightComponent& Component);
 
@@ -25,6 +26,11 @@ public:
 
 	TObjectPtr<class APostProcessVolume> PostProcessVolume;
 
-	TObjectPtr<class UStaticMeshComponent> SM_Center;
-	TObjectPtr<class UStaticMeshComponent> SM_Moon;
+	TObjectPtr<UStaticMeshComponent> SM_Center;
+	TObjectPtr<UStaticMeshComponent> SM_Moon;
+
+private:
+	bool IsLighting;
+	float LightingTimer;
+
 };

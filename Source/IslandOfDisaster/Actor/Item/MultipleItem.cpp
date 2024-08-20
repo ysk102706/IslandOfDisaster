@@ -18,7 +18,10 @@ void AMultipleItem::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Mesh = FindComponentByClass<UStaticMeshComponent>();
+	Mesh = FindComponentByClass<UMeshComponent>();
+
+	if (MeshType) Mesh = Cast<USkeletalMeshComponent>(Mesh);
+	else Mesh = Cast<UStaticMeshComponent>(Mesh);
 
 	NotFocused();
 }
@@ -36,7 +39,7 @@ void AMultipleItem::Focused()
 		IsNotFocused = false;
 
 		Mesh->bRenderCustomDepth = true;
-		Mesh->SetMaterial(0, FocusedMaterial);
+		for (int i = 0; i < Mesh->GetNumMaterials(); i++) Mesh->SetMaterial(i, FocusedMaterials[i]);
 	}
 }
 
@@ -47,7 +50,7 @@ void AMultipleItem::NotFocused()
 		IsFocused = false;
 
 		Mesh->bRenderCustomDepth = false;
-		Mesh->SetMaterial(0, DefaultMaterial);
+		for (int i = 0; i < Mesh->GetNumMaterials(); i++) Mesh->SetMaterial(i, DefaultMaterials[i]);
 	}
 }
 
@@ -61,7 +64,6 @@ void AMultipleItem::Picked()
 		if (UManagers::Get(GetWorld())->Player()->Inventory->AddItem(Item)) {
 			Item->SetActorLocation(FVector(0, 0, -100));
 			Item->SetWorldLocation(FVector(0, 0, -100));
-			Item->SetPhysics(false);
 		}
 		else Item->Droped();
 	}
@@ -77,4 +79,3 @@ void AMultipleItem::DestroyActor()
 	RemoveFromRoot();
 	Destroy();
 }
-

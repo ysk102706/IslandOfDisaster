@@ -62,7 +62,6 @@ bool AInventory::AddItem(TObjectPtr<AItem> Item)
 					IsConstruct = true;
 					ConstructPointObject = UManagers::Get(World)->DataLoad()->SpawnItemActor(World, Contents[i][0]->Id);
 					ConstructPointObject->IsConstructPoint = true;
-					ConstructPointObject->SetPhysics(false);
 				}
 			}
 			return true;
@@ -101,9 +100,11 @@ void AInventory::SelectItem(int Idx)
 
 		ConstructPointObject = UManagers::Get(World)->DataLoad()->SpawnItemActor(World, Contents[Idx][0]->Id);
 		ConstructPointObject->IsConstructPoint = true;
-		ConstructPointObject->SetPhysics(false);
 	}
-	else if (ConstructPointObject) ConstructPointObject->DestroyActor();
+	else if (ConstructPointObject) {
+		ConstructPointObject->DestroyActor();
+		ConstructPointObject = nullptr;
+	}
 }
 
 void AInventory::ConstructItem()

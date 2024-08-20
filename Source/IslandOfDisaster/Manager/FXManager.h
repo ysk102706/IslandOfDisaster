@@ -11,7 +11,7 @@ class UNiagaraComponent;
 UENUM(BlueprintType)
 enum EFXType {
 	FX_Asteroid		UMETA(DisplayName = "FX_Asteroid"),
-	FX_Gas				UMETA(DisplayName = "Gas"),
+	FX_Gas			UMETA(DisplayName = "Gas"),
 	FX_Rain			UMETA(DisplayName = "Rain"),
 	FX_ShootingStar	UMETA(DisplayName = "ShootingStar"),
 	FX_Star			UMETA(DisplayName = "Star"),

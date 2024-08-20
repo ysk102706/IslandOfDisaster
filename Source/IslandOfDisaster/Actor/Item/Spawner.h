@@ -12,18 +12,22 @@ UCLASS()
 class ISLANDOFDISASTER_API ASpawner : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	void Spawn();
 	int Random(int MinInclusive, int MaxInclusive);
 
-	UPROPERTY(EditAnywhere, Category=Item)
+	UPROPERTY(EditAnywhere, Category = Item)
 	int Id;
+	UPROPERTY(EditAnywhere, Category = Item)
+	TArray<TSubclassOf<AActor>> MultiItems;
+
+	UPROPERTY(EditAnywhere, Category = SpawnType)
+	bool IsOnce;
+
 
 	bool IsSpawned;
 	TObjectPtr<AActor> SpawnedActor;
 
-	UPROPERTY(EditAnywhere)
-	TArray<TSubclassOf<AActor>> MultiItems;
-
+	bool IsOnceSpawn;
 };
