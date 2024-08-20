@@ -48,6 +48,7 @@ void ACPP_Player::BeginPlay()
 
 	UManagers::Get(GetWorld())->SetPlayer(this);
 	Inventory = NewObject<AInventory>();
+	Inventory->AddToRoot();
 
 	Inventory->SetWorld(GetWorld());
 	Inventory->SetNoneItemTexture(NoneItemTexture);
@@ -287,7 +288,7 @@ void ACPP_Player::MultipleItemCheckRayCast()
 		if (FocusedMultipleItem && FocusedMultipleItem != MultipleItem) FocusedMultipleItem->NotFocused();
 		FocusedMultipleItem = MultipleItem;
 	}
-	else if (FocusedItem) {
+	else if (FocusedMultipleItem) {
 		FocusedMultipleItem->NotFocused();
 		FocusedMultipleItem = nullptr;
 	}

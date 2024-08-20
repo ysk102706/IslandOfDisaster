@@ -20,13 +20,15 @@ int ASpawner::Random(int MinInclusive, int MaxInclusive)
 
 void ASpawner::Spawn()
 {
+	if (IsOnce && IsOnceSpawn) return;
+	IsOnceSpawn = true;
+
 	if (!IsSpawned) {
 		if (Id >= 0) {
 			SpawnedActor = UManagers::Get(GetWorld())->DataLoad()->SpawnItemActor(GetWorld(), Id);
 			TObjectPtr<AItem> SpawnedItem = Cast<AItem>(SpawnedActor);
 			SpawnedItem->SetActorLocation(GetActorLocation());
 			SpawnedItem->SetWorldLocation(GetActorLocation());
-			SpawnedItem->SetPhysics(false);
 			SpawnedItem->Spawner = this;
 		}
 		else {

@@ -6,7 +6,10 @@
 #include "../UI/ManufactureUI.h"
 
 #define CreateOrSetWidget(Object, Type) \
-	if (!Type##Object) Type##Object = CreateWidget<U##Type##UI>(GetWorld(), Type##Widget); \
+	if (!Type##Object) {\
+		Type##Object = CreateWidget<U##Type##UI>(GetWorld(), Type##Widget); \
+		Type##Object->AddToRoot();\
+	}\
 	Object = Type##Object; \
 
 UUserWidget* UUIManager::GetWidget(EWidgetType Type) {

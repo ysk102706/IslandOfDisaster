@@ -19,11 +19,15 @@ public:
 
 	UPROPERTY(EditAnywhere, Category=Item)
 	int Id;
+	UPROPERTY(EditAnywhere, Category=Item)
+	TArray<TSubclassOf<AActor>> MultiItems;
+	
+	UPROPERTY(EditAnywhere, Category=SpawnType) 
+	bool IsOnce;
+
 
 	bool IsSpawned;
 	TObjectPtr<AActor> SpawnedActor;
 
-	UPROPERTY(EditAnywhere)
-	TArray<TSubclassOf<AActor>> MultiItems;
-
+	bool IsOnceSpawn;
 };

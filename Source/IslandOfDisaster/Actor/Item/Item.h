@@ -32,13 +32,13 @@ public:
 	void SetWorldLocation(FVector Pos);
 
 	UPROPERTY(EditAnywhere, Category=Materials)
-	class UMaterialInterface* DefaultMaterial;
+	TArray<TObjectPtr<UMaterialInterface>> DefaultMaterials;
 	UPROPERTY(EditAnywhere, Category = Materials)
-	class UMaterialInterface* FocusedMaterial;
+	TArray<TObjectPtr<UMaterialInterface>> FocusedMaterials;
 	UPROPERTY(EditAnywhere, Category = Materials)
-	class UMaterialInterface* ConstructAvailableMaterial;
+	TObjectPtr<UMaterialInterface> ConstructAvailableMaterial;
 	UPROPERTY(EditAnywhere, Category = Materials)
-	class UMaterialInterface* ConstructUnavailableMaterial;
+	TObjectPtr<UMaterialInterface> ConstructUnavailableMaterial;
 
 	UPROPERTY(EditAnywhere)
 	int Id;
