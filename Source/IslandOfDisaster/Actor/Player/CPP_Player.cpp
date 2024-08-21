@@ -118,18 +118,20 @@ void ACPP_Player::Tick(float DeltaTime)
 void ACPP_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	
 	auto EIC = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	if (EIC) {
 		EIC->BindAction(IA_Move, ETriggerEvent::Triggered, this, &ACPP_Player::Move);
 		EIC->BindAction(IA_Camera, ETriggerEvent::Triggered, this, &ACPP_Player::Camera);
-		EIC->BindAction(IA_Pick, ETriggerEvent::Triggered, this, &ACPP_Player::PickItem);
-		EIC->BindAction(IA_Drop, ETriggerEvent::Triggered, this, &ACPP_Player::DropItem);
-		EIC->BindAction(IA_SelectItem, ETriggerEvent::Triggered, this, &ACPP_Player::SelectItem);
+		EIC->BindAction(IA_Pick, ETriggerEvent::Started, this, &ACPP_Player::PickItem);
+		EIC->BindAction(IA_Drop, ETriggerEvent::Started, this, &ACPP_Player::DropItem);
+		EIC->BindAction(IA_SelectItem, ETriggerEvent::Started, this, &ACPP_Player::SelectItem);
 		EIC->BindAction(IA_Manufacture, ETriggerEvent::Started, this, &ACPP_Player::Manufacture);
 		EIC->BindAction(IA_Construct, ETriggerEvent::Started, this, &ACPP_Player::Construct);
 		EIC->BindAction(IA_Jump, ETriggerEvent::Started, this, &ACPP_Player::IF_Jump);
 		EIC->BindAction(IA_Drink, ETriggerEvent::Started, this, &ACPP_Player::Drink);
 		EIC->BindAction(IA_Eat, ETriggerEvent::Started, this, &ACPP_Player::Eat);
+		EIC->BindAction(IA_Escape, ETriggerEvent::Started, this, &ACPP_Player::Escape);
 	}
 }
 
@@ -218,7 +220,20 @@ void ACPP_Player::Escape(const FInputActionValue& Value)
 	
 	if (Type == EEscapeType::None) Type = EscapeCheckRayCast();
 
-
+	switch (Type) {
+	case EEscapeType::None:
+		UE_LOG(LogTemp, Warning, TEXT("None"));
+		break;
+	case EEscapeType::Ship:
+		UE_LOG(LogTemp, Warning, TEXT("Ship"));
+		break;
+	case EEscapeType::HotAirBalloon:
+		UE_LOG(LogTemp, Warning, TEXT("HotAirBalloon"));
+		break;
+	case EEscapeType::FlareGun:
+		UE_LOG(LogTemp, Warning, TEXT("FlareGun"));
+		break;
+	}
 }
 
 void ACPP_Player::ItemCheckRayCast()

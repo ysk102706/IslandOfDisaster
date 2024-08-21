@@ -24,6 +24,8 @@ public:
 	UFUNCTION()
 	void Quit();
 
+	bool IsHelpOpen;
+
 private:
 	UPROPERTY(meta = (BindWidget))
 	class UButton* BStart;

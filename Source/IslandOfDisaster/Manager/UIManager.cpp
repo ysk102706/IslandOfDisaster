@@ -5,6 +5,7 @@
 #include "../UI/PlayerInfoUI.h"
 #include "../UI/ManufactureUI.h"
 #include "../UI/TitleUI.h"
+#include "../UI/HelpUI.h"
 
 #define CreateOrSetWidget(Object, Type) \
 	if (!Type##Object) {\
@@ -25,6 +26,9 @@ UUserWidget* UUIManager::GetWidget(EWidgetType Type) {
 		break;
 	case EWidgetType::Title:
 		CreateOrSetWidget(Object, Title);
+		break;
+	case EWidgetType::Help:
+		CreateOrSetWidget(Object, Help);
 		break;
 	}
 

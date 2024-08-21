@@ -68,21 +68,21 @@ public:
 	TObjectPtr<UTexture2D> GetSelectedItemBG();
 	TObjectPtr<UTexture2D> GetNotSelectedItemBG();
 
-	UPROPERTY(EditAnywhere, Category=Input)
+	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputMappingContext* IMC_Default;
-	UPROPERTY(EditAnywhere, Category=Input)
+	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputAction* IA_Move;
-	UPROPERTY(EditAnywhere, Category=Input)
+	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputAction* IA_Camera;
-	UPROPERTY(EditAnywhere, Category=Input)
+	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputAction* IA_Pick;
-	UPROPERTY(EditAnywhere, Category=Input)
+	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputAction* IA_Drop;
-	UPROPERTY(EditAnywhere, Category=Input)
+	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputAction* IA_SelectItem;
-	UPROPERTY(EditAnywhere, Category=Input)
+	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputAction* IA_Manufacture;
-	UPROPERTY(EditAnywhere, Category=Input)
+	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputAction* IA_Construct;
 	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputAction* IA_Jump;

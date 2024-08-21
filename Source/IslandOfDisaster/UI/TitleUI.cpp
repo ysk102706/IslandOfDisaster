@@ -5,6 +5,9 @@
 #include "Components/Button.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "HelpUI.h"
+#include "../Manager/Managers.h"
+#include "../Manager/UIManager.h"
 
 void UTitleUI::NativeConstruct()
 {
@@ -22,7 +25,8 @@ void UTitleUI::Start()
 
 void UTitleUI::Help()
 {
-
+	UManagers::Get(GetWorld())->UI()->ShowWidget(EWidgetType::Help);
+	IsHelpOpen = true;
 }
 
 void UTitleUI::Quit()
