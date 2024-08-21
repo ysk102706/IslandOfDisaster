@@ -210,6 +210,17 @@ void ACPP_Player::Eat(const FInputActionValue& Value)
 	}
 }
 
+void ACPP_Player::Escape(const FInputActionValue& Value)
+{
+	EEscapeType Type = EEscapeType::None;
+
+	if (Inventory->GetSelectedItem() && Inventory->GetSelectedItem()->Name == TEXT("신호탄")) Type = EEscapeType::FlareGun;
+	
+	if (Type == EEscapeType::None) Type = EscapeCheckRayCast();
+
+
+}
+
 void ACPP_Player::ItemCheckRayCast()
 {
 	FHitResult Hit;
@@ -295,6 +306,24 @@ void ACPP_Player::MultipleItemCheckRayCast()
 		FocusedMultipleItem->NotFocused();
 		FocusedMultipleItem = nullptr;
 	}
+}
+
+EEscapeType ACPP_Player::EscapeCheckRayCast()
+{
+	FHitResult Hit;
+
+	FVector Forward = GetForwardVector();
+	FVector Start = PlayerCamera->GetComponentLocation();
+	FVector End = Start + Forward * ItemCheckRayLength;
+
+	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, CQP)) {
+		auto Item = Cast<AItem>(Hit.GetActor());
+		if (Item->Constructed) {
+			if (Item->GetActorLabel() == "BP_Ship") return EEscapeType::Ship;
+			else if (Item->GetActorLabel() == "BP_HotAirBalloon") return EEscapeType::HotAirBalloon;
+		}
+	}
+	return EEscapeType::None;
 }
 
 void ACPP_Player::Shake()

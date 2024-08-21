@@ -10,6 +10,14 @@ class AItem;
 class AInventory;
 class AMultipleItem;
 
+UENUM(Blueprintable, BlueprintType)
+enum EEscapeType {
+	None			UMETA(DisplayName = "None"),
+	Ship			UMETA(DisplayName = "Ship"),
+	HotAirBalloon	UMETA(DisplayName = "HotAirBalloon"),
+	FlareGun		UMETA(DisplayName = "FlareGun")
+};
+
 UCLASS()
 class ISLANDOFDISASTER_API ACPP_Player : public ACharacter
 {
@@ -41,6 +49,8 @@ public:
 	void Drink(const FInputActionValue& Value);
 	UFUNCTION()
 	void Eat(const FInputActionValue& Value);
+	UFUNCTION()
+	void Escape(const FInputActionValue& Value);
 
 	UFUNCTION()
 	void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
@@ -49,6 +59,7 @@ public:
 	void ConstructCheckRayCast();
 	void DrinkCheckRayCast();
 	void MultipleItemCheckRayCast();
+	EEscapeType EscapeCheckRayCast();
 
 	void Shake();
 
@@ -79,6 +90,8 @@ public:
 	class UInputAction* IA_Drink;
 	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputAction* IA_Eat;
+	UPROPERTY(EditAnywhere, Category = Input)
+	class UInputAction* IA_Escape;
 
 	UPROPERTY(EditAnywhere, Category=Ray)
 	float ItemCheckRayLength;
