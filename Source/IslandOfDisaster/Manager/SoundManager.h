@@ -36,6 +36,8 @@ public:
 	void PlayLoopSound(ESound Type);
 	void StopLoopSound(ESound Type);
 
+	void SetSoundVolume(ESound Type, int Volume);
+
 	UPROPERTY(EditAnywhere, Category = Sound)
 	TObjectPtr<USoundBase> S_Construct;
 	UPROPERTY(EditAnywhere, Category = Sound)

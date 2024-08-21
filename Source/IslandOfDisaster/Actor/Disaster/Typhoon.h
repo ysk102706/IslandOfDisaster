@@ -19,4 +19,7 @@ public:
 	virtual void Effect2() override;
 	virtual void Effect3() override;
 
+private:
+	int DarkPercent;
+
 };

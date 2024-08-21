@@ -2,6 +2,9 @@
 
 
 #include "Tsunami.h"
+#include "../Player/CPP_Player.h"
+#include "../../Manager/Managers.h"
+#include "../Weather.h"
 
 void ATsunami::Effect1()
 {
@@ -23,12 +26,17 @@ void ATsunami::Effect1()
 
 void ATsunami::Effect2()
 {
-	if (!(Hours % 5)) 1;
+	if (!(Hours % 5)) UManagers::Get(GetWorld())->Player()->Shake();
 }
 
 void ATsunami::Effect3()
 {
-	if (IsChangeDay) 1;
+	if (IsChangeDay) {
+		int Value = Random(1, 100);
+
+		if (Value <= 30) UManagers::Get(GetWorld())->Weather()->Rain();
+		else UManagers::Get(GetWorld())->Weather()->Clear();
+	}
 
 	IsChangeDay = false;
 }

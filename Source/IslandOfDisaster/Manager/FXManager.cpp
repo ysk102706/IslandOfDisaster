@@ -11,7 +11,7 @@
 void UFXManager::Tick(const UWorld* World)
 {
 	if (NSC_Rain) NSC_Rain->SetWorldLocation(UManagers::Get(GetWorld())->Player()->GetActorLocation() + FVector(0, 0, 3000));
-	if (NSC_Wind) NSC_Wind->SetWorldLocation(UManagers::Get(GetWorld())->Player()->GetActorLocation() + FVector(0, 0, 0));
+	if (NSC_Wind) NSC_Wind->SetWorldLocation(UManagers::Get(GetWorld())->Player()->GetActorLocation());
 }
 
 TObjectPtr<UNiagaraSystem> UFXManager::GetFX(EFXType Type)
