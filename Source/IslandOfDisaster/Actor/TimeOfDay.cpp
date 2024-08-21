@@ -23,6 +23,8 @@ void ATimeOfDay::BeginPlay()
 	Super::BeginPlay();
 
 	TActorIterator<ADirectionalLight> It(GetWorld());
+	while ((*It)->GetActorLabel() != TEXT("SunLight")) ++It;
+
 	SunLight = *It;
 	++It;
 	MoonLight = *It;

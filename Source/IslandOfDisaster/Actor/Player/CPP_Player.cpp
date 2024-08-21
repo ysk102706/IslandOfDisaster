@@ -334,8 +334,8 @@ EEscapeType ACPP_Player::EscapeCheckRayCast()
 	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, CQP)) {
 		auto Item = Cast<AItem>(Hit.GetActor());
 		if (Item->Constructed) {
-			if (Item->GetActorLabel() == "BP_Ship") return EEscapeType::Ship;
-			else if (Item->GetActorLabel() == "BP_HotAirBalloon") return EEscapeType::HotAirBalloon;
+			if (Item->GetActorLabel() == TEXT("BP_Ship")) return EEscapeType::Ship;
+			else if (Item->GetActorLabel() == TEXT("BP_HotAirBalloon")) return EEscapeType::HotAirBalloon;
 		}
 	}
 	return EEscapeType::None;
