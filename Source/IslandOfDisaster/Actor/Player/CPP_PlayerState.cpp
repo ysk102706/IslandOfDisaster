@@ -95,7 +95,7 @@ void ACPP_PlayerState::Initialize()
 	UWorld* World = GetWorld();
 	for (TActorIterator<ASpawner> It(World); It; ++It) {
 		Spawners.Add(*It);
-		if (Random(0, 1)) It->Spawn();
+		if (Random(0, 2) == 2) It->Spawn();
 	}
 }
 

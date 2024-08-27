@@ -27,7 +27,6 @@ void AAsteroid::Effect3()
 	int Hour = (Hours + 9) % 24;
 	if ((Hour >= 20 || Hour <= 5) && !IsLight) {
 		int Value = Random(1, 5);
-		UE_LOG(LogTemp, Warning, TEXT("%d"), Value)
 		if (Value == 1) {
 			UManagers::Get(GetWorld())->TimeOfDay()->NightLighting();
 			IsLight = true;

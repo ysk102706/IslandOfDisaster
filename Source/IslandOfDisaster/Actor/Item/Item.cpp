@@ -107,9 +107,9 @@ void AItem::Droped()
 {
 	if (!IsLoaded) UManagers::Get(GetWorld())->DataLoad()->LoadItems(Id, this);
 	auto Player = UManagers::Get(GetWorld())->Player();
-	FVector Pos = Player->GetActorLocation() + FVector(0, 0, 60);
-	SetActorLocation(Pos);
+	FVector Pos = Player->GetActorLocation() + FVector(0, 0, 80);
 	SetPhysics(true);
+	SetActorLocation(Pos);
 	Mesh->SetWorldLocation(Pos);
 	Mesh->AddVelocityChangeImpulseAtLocation(UManagers::Get(GetWorld())->Player()->GetForwardVector() * 500, Pos);
 }

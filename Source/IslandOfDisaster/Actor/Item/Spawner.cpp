@@ -32,9 +32,9 @@ void ASpawner::Spawn()
 			SpawnedItem->Spawner = this;
 		}
 		else {
-			int Rand = Random(0, 10), Idx = 0;
+			int Rand = Random(0, 10), Idx = Random(0, (MultiItems.Num() - 1) >> 1);
 
-			if (Rand <= UManagers::Get(GetWorld())->Disaster()->Disaster->AnimalEpidemicPercent) Idx = 1;
+			if (Rand < UManagers::Get(GetWorld())->Disaster()->Disaster->AnimalEpidemicPercent) Idx += 4;
 
 			FVector Pos = GetActorLocation();
 			FRotator Rot = GetActorRotation();

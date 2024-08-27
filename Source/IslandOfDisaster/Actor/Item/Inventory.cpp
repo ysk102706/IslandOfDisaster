@@ -76,7 +76,10 @@ void AInventory::DropItem()
 	if (item[0]) {
 		(*ContentMap->Find(item[0]->Name))--;
 		
-		if (item.Num() == 1 && item[0]->IsConstruct) ConstructPointObject->DestroyActor();
+		if (item.Num() == 1 && item[0]->IsConstruct) {
+			ConstructPointObject->DestroyActor();
+			ConstructPointObject = nullptr;
+		}
 
 		if (!*ContentMap->Find(item[0]->Name)) ContentMap->Remove(item[0]->Name);
 

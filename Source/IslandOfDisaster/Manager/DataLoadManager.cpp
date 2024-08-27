@@ -109,6 +109,7 @@ TObjectPtr<AItem> UDataLoadManager::SpawnItemActor(UWorld* World, int Id)
 
 	auto Item = Cast<AItem>(Actor);
 	LoadItems(Id, Item);
+
 	return Item;
 }
 
