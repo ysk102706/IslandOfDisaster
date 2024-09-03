@@ -26,7 +26,7 @@ class ISLANDOFDISASTER_API UManagers : public UGameInstance
 public:
 	UManagers();
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "InitManger"))
-	void InitManager(const UWorld* World);
+	void InitManagers(const UWorld* World);
 	
 	UUIManager* UI();
 	UDataLoadManager* DataLoad();

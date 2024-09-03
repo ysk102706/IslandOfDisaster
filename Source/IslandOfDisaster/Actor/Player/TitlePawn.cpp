@@ -21,7 +21,7 @@ void ATitlePawn::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	UManagers::Get(GetWorld())->InitManager(GetWorld());
+	UManagers::Get(GetWorld())->InitManagers(GetWorld());
 
 	SetActorLocation(FVector(6460.0, -8610.0, 1210.0));
 	FindComponentByClass<UCameraComponent>()->SetWorldRotation(FRotator(5, 62.5, 0));

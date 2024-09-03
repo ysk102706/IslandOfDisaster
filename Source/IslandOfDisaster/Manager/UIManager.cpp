@@ -44,5 +44,5 @@ void UUIManager::ShowWidget(EWidgetType Type)
 void UUIManager::HideWidget(EWidgetType Type)
 {
 	UUserWidget* Object = GetWidget(Type);
-	if (Object) Object->RemoveFromViewport();
+	if (Object) Object->RemoveFromParent();
 }

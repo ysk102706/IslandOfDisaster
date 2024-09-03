@@ -15,6 +15,9 @@ class ISLANDOFDISASTER_API UPlayerInfoUI : public UUserWidget
 	GENERATED_BODY()
 	
 public:
+	void Init();
+	void SetAllItem(UTexture2D* Texture);
+
 	void SetHP(float MaxHP, float CurHP);
 	void SetHunger(float MaxHunger, float CurHunger);
 	void SetThirsty(float MaxThirsty, float CurThirsty);

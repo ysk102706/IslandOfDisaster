@@ -15,6 +15,8 @@ class ISLANDOFDISASTER_API ACPP_PlayerState : public APlayerState
 	GENERATED_BODY()
 	
 public:
+	void Spawns();
+
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	

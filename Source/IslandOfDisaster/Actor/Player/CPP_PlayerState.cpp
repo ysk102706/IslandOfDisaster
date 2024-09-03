@@ -12,6 +12,7 @@
 #include "../Item/Spawner.h"
 #include "EngineUtils.h"
 #include "../TimeOfDay.h"
+#include "Async/Async.h"
 
 #define Max(a, b) a > b ? a : b
 #define Min(a, b) a < b ? a : b

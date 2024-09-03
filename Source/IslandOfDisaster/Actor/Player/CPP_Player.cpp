@@ -17,13 +17,16 @@
 #include "../../Manager/DataLoadManager.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/SceneCaptureComponent2D.h"
-#include "Camera/CameraShake.h"
+#include "LegacyCameraShake.h"
 #include "../../Manager/FXManager.h"
 #include "Components/CapsuleComponent.h"
 #include "../Item/Item.h"
 #include "../Item/MultipleItem.h"
 #include "../Item/Inventory.h"
 #include "../../Manager/SoundManager.h"
+#include "../../UI/PlayerInfoUI.h"
+#include "WaterBodyLakeComponent.h"
+#include "WaterBodyOceanComponent.h"
 
 ACPP_Player::ACPP_Player()
 {
@@ -69,7 +72,9 @@ void ACPP_Player::BeginPlay()
 		}
 	}
 
-	Cast<UManagers>(GetGameInstance())->UI()->ShowWidget(EWidgetType::PlayerInfo);
+	UManagers::Get(GetWorld())->UI()->ShowWidget(EWidgetType::PlayerInfo);
+	Cast<UPlayerInfoUI>(UManagers::Get(GetWorld())->UI()->GetWidget(EWidgetType::PlayerInfo))->Init();
+	Cast<UPlayerInfoUI>(UManagers::Get(GetWorld())->UI()->GetWidget(EWidgetType::PlayerInfo))->SetAllItem(NoneItemTexture);
 
 	UManagers::Get(GetWorld())->FX()->SpawnFX(GetWorld(), EFXType::FX_Star, FVector(0, 0, 0));
 	UManagers::Get(GetWorld())->FX()->SetActiveFX(GetWorld(), EFXType::FX_Star, false);
@@ -187,7 +192,10 @@ void ACPP_Player::Manufacture(const FInputActionValue& Value)
 
 void ACPP_Player::Construct(const FInputActionValue& Value)
 {
-	if (IsConstruct) Inventory->ConstructItem();
+	if (IsConstruct) {
+		Inventory->ConstructItem();
+		UManagers::Get(GetWorld())->Sound()->PlaySingleSound(GetWorld(), ESound::S_Construct);
+	}
 }
 
 void ACPP_Player::IF_Jump(const FInputActionValue& Value)
@@ -201,7 +209,10 @@ void ACPP_Player::IF_Jump(const FInputActionValue& Value)
 
 void ACPP_Player::Drink(const FInputActionValue& Value)
 {
-	if (IsDrinkable) Cast<ACPP_PlayerState>(UGameplayStatics::GetPlayerState(GetWorld(), 0))->IncreaseThirsty(10);
+	if (IsDrinkable) {
+		Cast<ACPP_PlayerState>(UGameplayStatics::GetPlayerState(GetWorld(), 0))->IncreaseThirsty(10);
+		UManagers::Get(GetWorld())->Sound()->PlaySingleSound(GetWorld(), ESound::S_Drink);
+	}
 }
 
 void ACPP_Player::Eat(const FInputActionValue& Value)
@@ -209,6 +220,7 @@ void ACPP_Player::Eat(const FInputActionValue& Value)
 	if (Inventory->GetSelectedItem() && Inventory->GetSelectedItem()->Name == TEXT("고기")) {
 		Inventory->Consume(TEXT("고기"), 1);
 		Cast<ACPP_PlayerState>(UGameplayStatics::GetPlayerState(GetWorld(), 0))->IncreaseHunger(10);
+		UManagers::Get(GetWorld())->Sound()->PlaySingleSound(GetWorld(), ESound::S_Eat);
 	}
 }
 
@@ -232,6 +244,7 @@ void ACPP_Player::Escape(const FInputActionValue& Value)
 		break;
 	case EEscapeType::FlareGun:
 		UE_LOG(LogTemp, Warning, TEXT("FlareGun"));
+		UManagers::Get(GetWorld())->Sound()->PlaySingleSound(GetWorld(), ESound::S_SignalFlare);
 		break;
 	}
 }
@@ -296,8 +309,7 @@ void ACPP_Player::DrinkCheckRayCast()
 	//DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 0.5f, 0, 1);
 
 	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_GameTraceChannel3, CQP)) {
-		auto Label = Hit.GetActor()->GetActorLabel();
-		if (Label == "WaterBodyLake") IsDrinkable = true;
+		if (Hit.GetActor()->FindComponentByClass<UWaterBodyLakeComponent>()) IsDrinkable = true;
 		else IsDrinkable = false;
 	}
 	else IsDrinkable = false;
@@ -334,8 +346,8 @@ EEscapeType ACPP_Player::EscapeCheckRayCast()
 	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, CQP)) {
 		auto Item = Cast<AItem>(Hit.GetActor());
 		if (Item && Item->Constructed) {
-			if (Item->GetActorLabel() == TEXT("BP_Ship")) return EEscapeType::Ship;
-			else if (Item->GetActorLabel() == TEXT("BP_HotAirBalloon")) return EEscapeType::HotAirBalloon;
+			if (Item->ActorHasTag("BP_Ship")) return EEscapeType::Ship;
+			else if (Item->ActorHasTag("BP_HotAirBalloon")) return EEscapeType::HotAirBalloon;
 		}
 	}
 	return EEscapeType::None;
@@ -343,7 +355,10 @@ EEscapeType ACPP_Player::EscapeCheckRayCast()
 
 void ACPP_Player::Shake()
 {
-	if (auto PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0)) PlayerController->ClientStartCameraShake(CameraShake);
+	if (auto PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0)) {
+		PlayerController->ClientStartCameraShake(CameraShake);
+		UManagers::Get(GetWorld())->Sound()->PlaySingleSound(GetWorld(), ESound::S_Earthquake);
+	}
 }
 
 FVector ACPP_Player::GetForwardVector()
@@ -363,7 +378,7 @@ TObjectPtr<UTexture2D> ACPP_Player::GetNotSelectedItemBG()
 
 void ACPP_Player::OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (OtherActor->GetActorLabel() == "Landscape" || OtherActor->GetActorLabel() == "WaterBodyLake" || OtherActor->GetActorLabel() == "WaterBodyOcean") {
+	if (OtherActor->ActorHasTag("Landscape") || OtherActor->FindComponentByClass<UWaterBodyLakeComponent>() || OtherActor->FindComponentByClass<UWaterBodyOceanComponent>()) {
 		if (IsJumpStart || IsJumping) {
 			IsJumpEnd = true;
 			IsJumping = false;
@@ -377,5 +392,9 @@ void ACPP_Player::ConstructCheckRayCastAction(FHitResult& Hit)
 	auto Actor = Hit.GetActor();
 	auto ConstructPoint = Cast<AItem>(Actor);
 	if (ConstructPoint && ConstructPoint->IsConstructPoint) CQP.AddIgnoredActor(ConstructPoint);
-	else if (Actor) IsConstruct = Inventory->ShowConstructPoint(Actor->GetActorLabel(), Hit.Location);
+	else if (Actor) {
+		if (Actor->ActorHasTag("Landscape")) IsConstruct = Inventory->ShowConstructPoint("Landscape", Hit.Location);
+		else if (Actor->FindComponentByClass<UWaterBodyOceanComponent>()) IsConstruct = Inventory->ShowConstructPoint("WaterBodyOcean", Hit.Location);
+		else if (Actor->ActorHasTag("HotAirBalloonLandingSite")) IsConstruct = Inventory->ShowConstructPoint("BP_HotAirBalloonLandingSite", Hit.Location);
+	}
 }

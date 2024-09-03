@@ -16,6 +16,9 @@
 ATimeOfDay::ATimeOfDay()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	IsLighting = false;
+	LightingTimer = 0;
 }
 
 void ATimeOfDay::BeginPlay()
@@ -23,7 +26,7 @@ void ATimeOfDay::BeginPlay()
 	Super::BeginPlay();
 
 	TActorIterator<ADirectionalLight> It(GetWorld());
-	while ((*It)->GetActorLabel() != TEXT("SunLight")) ++It;
+	while ((*It)->ActorHasTag("SunLight")) ++It;
 
 	SunLight = *It;
 	++It;

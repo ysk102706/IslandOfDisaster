@@ -159,8 +159,6 @@ bool AInventory::ShowConstructPoint(FString HitObjectName, FVector HitPos)
 	return false;
 }
 
-
-
 int32 AInventory::GetItemCount(FString Name)
 {
 	if (ContentMap->Contains(Name)) return *ContentMap->Find(Name);
