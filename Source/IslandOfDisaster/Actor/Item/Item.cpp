@@ -116,16 +116,21 @@ void AItem::Droped()
 
 void AItem::Construct(FVector Pos)
 {
-	SetPhysics(false);
+	SetPhysics(true);
 	SetActorLocation(Pos);
 	SetWorldLocation(Pos);
 
-	Mesh->SetCollisionProfileName(TEXT("BlockAllDynamic"));
+	Mesh->SetEnableGravity(false);
+	Mesh->SetCollisionProfileName(TEXT("IgnoreWorldStatic"));
 	Mesh->SetWorldRotation(FRotator(0, 0, 0));
 
 	if (Mesh->GetNumChildrenComponents()) {
 		auto SM = Cast<UStaticMeshComponent>(Mesh->GetChildComponent(0));
-		if (SM) SM->SetCollisionProfileName(TEXT("BlockAllDynamic"));
+		if (SM) {
+			Mesh->SetSimulatePhysics(true);
+			SM->SetCollisionProfileName(TEXT("IgnoreWorldStatic"));
+			Mesh->SetEnableGravity(false);
+		}
 	}
 
 	Constructed = true;

@@ -27,6 +27,10 @@
 #include "../../UI/PlayerInfoUI.h"
 #include "WaterBodyLakeComponent.h"
 #include "WaterBodyOceanComponent.h"
+#include "LevelSequenceActor.h"
+#include "LevelSequencePlayer.h"
+#include "EngineUtils.h"
+#include "../../Manager/DisasterManager.h"
 
 ACPP_Player::ACPP_Player()
 {
@@ -116,6 +120,34 @@ void ACPP_Player::Tick(float DeltaTime)
 			IsJumpEnd = false;
 
 			JumpEndTimer = 0;
+		}
+	}
+
+	if (IsCutScenePlay) {
+		CutSceneTimer += DeltaTime;
+		if (CutSceneTimer >= CutSceneTime) {
+			IsCutScenePlay = false;
+			CutSceneTimer = 0;
+
+			FString SceneName = "";
+
+			switch (UManagers::Get(GetWorld())->Disaster()->DisasterType) {
+			case EDisasterType::Typhoon:
+				UGameplayStatics::OpenLevel(GetWorld(), TEXT("Typhoon"));
+				break;
+			case EDisasterType::Volcano:
+				UGameplayStatics::OpenLevel(GetWorld(), TEXT("Volcano"));
+				break;
+			case EDisasterType::Epidemic:
+				UGameplayStatics::OpenLevel(GetWorld(), TEXT("Epidemic"));
+				break;
+			case EDisasterType::Asteroid:
+				UGameplayStatics::OpenLevel(GetWorld(), TEXT("Asteroid"));
+				break;
+			case EDisasterType::Tsunami:
+				UGameplayStatics::OpenLevel(GetWorld(), TEXT("Tsunami"));
+				break;
+			}
 		}
 	}
 }
@@ -210,7 +242,7 @@ void ACPP_Player::IF_Jump(const FInputActionValue& Value)
 void ACPP_Player::Drink(const FInputActionValue& Value)
 {
 	if (IsDrinkable) {
-		Cast<ACPP_PlayerState>(UGameplayStatics::GetPlayerState(GetWorld(), 0))->IncreaseThirsty(10);
+		Cast<ACPP_PlayerState>(UGameplayStatics::GetPlayerState(GetWorld(), 0))->IncreaseThirsty(3);
 		UManagers::Get(GetWorld())->Sound()->PlaySingleSound(GetWorld(), ESound::S_Drink);
 	}
 }
@@ -219,7 +251,7 @@ void ACPP_Player::Eat(const FInputActionValue& Value)
 {
 	if (Inventory->GetSelectedItem() && Inventory->GetSelectedItem()->Name == TEXT("고기")) {
 		Inventory->Consume(TEXT("고기"), 1);
-		Cast<ACPP_PlayerState>(UGameplayStatics::GetPlayerState(GetWorld(), 0))->IncreaseHunger(10);
+		Cast<ACPP_PlayerState>(UGameplayStatics::GetPlayerState(GetWorld(), 0))->IncreaseHunger(5);
 		UManagers::Get(GetWorld())->Sound()->PlaySingleSound(GetWorld(), ESound::S_Eat);
 	}
 }
@@ -232,20 +264,36 @@ void ACPP_Player::Escape(const FInputActionValue& Value)
 	
 	if (Type == EEscapeType::None) Type = EscapeCheckRayCast();
 
+	FName Tag = "";
+
 	switch (Type) {
-	case EEscapeType::None:
-		UE_LOG(LogTemp, Warning, TEXT("None"));
-		break;
 	case EEscapeType::Ship:
-		UE_LOG(LogTemp, Warning, TEXT("Ship"));
+		IsCutScenePlay = true;
+		CutSceneTimer = 0;
+		CutSceneTime = 10.5f;
+		Tag = "Ship";
 		break;
 	case EEscapeType::HotAirBalloon:
-		UE_LOG(LogTemp, Warning, TEXT("HotAirBalloon"));
+		IsCutScenePlay = true;
+		CutSceneTimer = 0;
+		CutSceneTime = 10.5f;
+		Tag = "AirBalloon";
 		break;
 	case EEscapeType::FlareGun:
-		UE_LOG(LogTemp, Warning, TEXT("FlareGun"));
-		UManagers::Get(GetWorld())->Sound()->PlaySingleSound(GetWorld(), ESound::S_SignalFlare);
+		IsCutScenePlay = true;
+		CutSceneTimer = 0;
+		CutSceneTime = 15.5f;
+		Tag = "FlareGun";
 		break;
+	}
+
+	if (Tag != "") {
+		UManagers::Get(GetWorld())->UI()->HideWidget(EWidgetType::PlayerInfo);
+
+		TActorIterator<ALevelSequenceActor> It(GetWorld());
+		while (!(*It)->ActorHasTag(Tag)) ++It;
+
+		(*It)->SequencePlayer->Play();
 	}
 }
 
@@ -395,6 +443,6 @@ void ACPP_Player::ConstructCheckRayCastAction(FHitResult& Hit)
 	else if (Actor) {
 		if (Actor->ActorHasTag("Landscape")) IsConstruct = Inventory->ShowConstructPoint("Landscape", Hit.Location);
 		else if (Actor->FindComponentByClass<UWaterBodyOceanComponent>()) IsConstruct = Inventory->ShowConstructPoint("WaterBodyOcean", Hit.Location);
-		else if (Actor->ActorHasTag("HotAirBalloonLandingSite")) IsConstruct = Inventory->ShowConstructPoint("BP_HotAirBalloonLandingSite", Hit.Location);
+		else if (Actor->ActorHasTag("BP_HotAirBalloonLandingSite")) IsConstruct = Inventory->ShowConstructPoint("BP_HotAirBalloonLandingSite", Hit.Location);
 	}
 }

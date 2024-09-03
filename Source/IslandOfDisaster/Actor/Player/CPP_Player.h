@@ -140,4 +140,8 @@ private:
 	float JumpEndTimer;
 
 	bool IsDrinkable;
+
+	bool IsCutScenePlay;
+	float CutSceneTimer;
+	float CutSceneTime;
 };

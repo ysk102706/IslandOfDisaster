@@ -15,8 +15,6 @@ class ISLANDOFDISASTER_API ACPP_PlayerState : public APlayerState
 	GENERATED_BODY()
 	
 public:
-	void Spawns();
-
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	
@@ -85,5 +83,9 @@ public:
 	TArray<TObjectPtr<class ASpawner>> Spawners;
 
 	TObjectPtr<class ADisaster> Disaster;
+
+private:
+	bool IsDieCutScene;
+	float CutSceneTimer;
 	
 };

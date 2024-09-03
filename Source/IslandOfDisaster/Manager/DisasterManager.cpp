@@ -29,4 +29,5 @@ void UDisasterManager::SetDisaster(EDisasterType Type)
 	}
 
 	Disaster = SelectedDisaster;
+	DisasterType = Type;
 }

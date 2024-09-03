@@ -24,6 +24,8 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = SpawnType)
 	bool IsOnce;
+	UPROPERTY(EditAnywhere, Category = SpawnType)
+	bool IsTree;
 
 
 	bool IsSpawned;

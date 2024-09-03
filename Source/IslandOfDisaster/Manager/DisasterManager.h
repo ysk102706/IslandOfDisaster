@@ -39,5 +39,6 @@ public:
 	TSubclassOf<ADisaster> Typhoon;
 
 	ADisaster* Disaster;
+	EDisasterType DisasterType;
 
 };

@@ -26,7 +26,7 @@ void ATimeOfDay::BeginPlay()
 	Super::BeginPlay();
 
 	TActorIterator<ADirectionalLight> It(GetWorld());
-	while ((*It)->ActorHasTag("SunLight")) ++It;
+	while (!(*It)->ActorHasTag("SunLight")) ++It;
 
 	SunLight = *It;
 	++It;

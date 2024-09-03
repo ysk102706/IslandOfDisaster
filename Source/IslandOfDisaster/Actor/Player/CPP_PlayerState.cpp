@@ -13,6 +13,9 @@
 #include "EngineUtils.h"
 #include "../TimeOfDay.h"
 #include "Async/Async.h"
+#include "LevelSequenceActor.h"
+#include "LevelSequencePlayer.h"
+#include "Kismet/GameplayStatics.h"
 
 #define Max(a, b) a > b ? a : b
 #define Min(a, b) a < b ? a : b
@@ -43,7 +46,7 @@ void ACPP_PlayerState::Tick(float DeltaTime)
 			Disaster->Effect3();
 
 			if (PhysiologicalPhenomenonUnit == 2) {
-				DecreaseHunger(5);
+				DecreaseHunger(10);
 				DecreaseThirsty(5);
 
 				PhysiologicalPhenomenonUnit = 0;
@@ -68,6 +71,15 @@ void ACPP_PlayerState::Tick(float DeltaTime)
 		}
 
 		StateApplyToUI();
+	}
+
+	if (IsDieCutScene) {
+		CutSceneTimer += DeltaTime;
+		if (CutSceneTimer >= 4.2f) {
+			IsDieCutScene = false;
+			CutSceneTimer = 0;
+			UGameplayStatics::OpenLevel(GetWorld(), TEXT("Title"));
+		}
 	}
 }
 
@@ -153,6 +165,16 @@ void ACPP_PlayerState::IncreaseHumidity(float Value)
 void ACPP_PlayerState::DecreaseHP(float Value)
 {
 	Decrease(HP, Value);
+
+	if (CurHP <= 0) {
+		TActorIterator<ALevelSequenceActor> It(GetWorld());
+		while (!(*It)->ActorHasTag("Die")) ++It;
+
+		(*It)->SequencePlayer->Play();
+
+		IsDieCutScene = true;
+		CutSceneTimer = 0;
+	}
 }
 
 void ACPP_PlayerState::DecreaseHunger(float Value)
@@ -161,6 +183,16 @@ void ACPP_PlayerState::DecreaseHunger(float Value)
 		Decrease(Hunger, Value);
 	}
 	else Decrease(HP, Value / 2);
+
+	if (CurHP <= 0) {
+		TActorIterator<ALevelSequenceActor> It(GetWorld());
+		while (!(*It)->ActorHasTag("Die")) ++It;
+
+		(*It)->SequencePlayer->Play();
+
+		IsDieCutScene = true;
+		CutSceneTimer = 0;
+	}
 }
 
 void ACPP_PlayerState::DecreaseThirsty(float Value)
@@ -169,6 +201,16 @@ void ACPP_PlayerState::DecreaseThirsty(float Value)
 		Decrease(Thirsty, Value);
 	}
 	else Decrease(HP, Value / 2);
+
+	if (CurHP <= 0) {
+		TActorIterator<ALevelSequenceActor> It(GetWorld());
+		while (!(*It)->ActorHasTag("Die")) ++It;
+
+		(*It)->SequencePlayer->Play();
+
+		IsDieCutScene = true;
+		CutSceneTimer = 0;
+	}
 }
 
 void ACPP_PlayerState::DecreaseTemperature(float Value)

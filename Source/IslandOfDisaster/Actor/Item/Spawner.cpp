@@ -34,7 +34,7 @@ void ASpawner::Spawn()
 		else {
 			int Rand = Random(0, 10), Idx = Random(0, (MultiItems.Num() - 1) >> 1);
 
-			if (Rand < UManagers::Get(GetWorld())->Disaster()->Disaster->AnimalEpidemicPercent) Idx += 4;
+			if (!IsTree && Rand < UManagers::Get(GetWorld())->Disaster()->Disaster->AnimalEpidemicPercent) Idx += 4;
 
 			FVector Pos = GetActorLocation();
 			FRotator Rot = GetActorRotation();
