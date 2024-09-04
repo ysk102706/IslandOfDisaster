@@ -44,8 +44,6 @@ TObjectPtr<UNiagaraSystem> UFXManager::GetFX(EFXType Type)
 
 void UFXManager::SetComponent(EFXType Type, TObjectPtr<UNiagaraComponent> Component)
 {
-	if (Component) Component->AddToRoot();
-	
 	switch (Type) {
 	case EFXType::FX_Rain:
 		NSC_Rain = Component;

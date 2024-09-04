@@ -54,14 +54,22 @@ private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<USoundManager> SoundManagerClass;
 	
+	UPROPERTY()
 	TObjectPtr<UUIManager> UIManagerObject;
+	UPROPERTY()
 	TObjectPtr<UDataLoadManager> DataLoadManagerObject;
+	UPROPERTY()
 	TObjectPtr<UDisasterManager> DisasterManagerObject;
+	UPROPERTY()
 	TObjectPtr<UFXManager> FXManagerObject;
+	UPROPERTY()
 	TObjectPtr<USoundManager> SoundManagerObject;
+	UPROPERTY()
 	TObjectPtr<ACPP_Player> PlayerObject;
 
+	UPROPERTY()
 	TObjectPtr<AWeather> WeatherObject;
+	UPROPERTY()
 	TObjectPtr<ATimeOfDay> TimeOfDayObject;
 
 };

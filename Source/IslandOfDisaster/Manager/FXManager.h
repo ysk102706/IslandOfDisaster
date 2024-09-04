@@ -51,9 +51,13 @@ public:
 	TObjectPtr<UNiagaraSystem> NS_Wind;
 
 private:
+	UPROPERTY()
 	TObjectPtr<UNiagaraComponent> NSC_Rain;
+	UPROPERTY()
 	TObjectPtr<UNiagaraComponent> NSC_ShootingStar;
+	UPROPERTY()
 	TObjectPtr<UNiagaraComponent> NSC_Star;
+	UPROPERTY()
 	TObjectPtr<UNiagaraComponent> NSC_Wind;
 
 };

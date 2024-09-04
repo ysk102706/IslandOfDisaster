@@ -15,7 +15,6 @@
 #define InitManager(Type) \
 	if (Type##ManagerClass->StaticClass()) Type##ManagerObject = NewObject<U##Type##Manager>(this, Type##ManagerClass);\
 	else Type##ManagerObject = Type##ManagerClass.GetDefaultObject();\
-	Type##ManagerObject->AddToRoot();\
 
 UManagers::UManagers() {
 	UIManagerClass = UUIManager::StaticClass();

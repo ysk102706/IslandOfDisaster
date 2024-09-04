@@ -19,6 +19,7 @@ void UHelpUI::NativeConstruct()
 
 	CurPage = 0;
 	SetHelpImage();
+	SetPage();
 }
 
 void UHelpUI::PrePage()
@@ -26,6 +27,7 @@ void UHelpUI::PrePage()
 	if (CurPage > 0) {
 		CurPage--;
 		SetHelpImage();
+		SetPage();
 	}
 }
 
@@ -34,6 +36,7 @@ void UHelpUI::NextPage()
 	if (CurPage < HelpImages.Num() - 1) {
 		CurPage++;
 		SetHelpImage();
+		SetPage();
 	}
 }
 
@@ -45,7 +48,7 @@ void UHelpUI::Close()
 
 void UHelpUI::SetPage()
 {
-	TPage->SetText(FText::Format(FText::FromString(TEXT("%d/%d")), CurPage + 1, HelpImages.Num()));
+	TPage->SetText(FText::FromString(FString::Printf(TEXT("%d/%d"), CurPage + 1, HelpImages.Num())));
 }
 
 void UHelpUI::SetHelpImage()

@@ -10,7 +10,6 @@
 #define CreateOrSetWidget(Object, Type) \
 	if (!Type##Object) {\
 		Type##Object = CreateWidget<U##Type##UI>(GetWorld(), Type##Widget); \
-		Type##Object->AddToRoot();\
 	}\
 	Object = Type##Object; \
 

@@ -8,9 +8,7 @@
 void USoundManager::Init(const UWorld* World)
 {
 	AC_Wind = UGameplayStatics::SpawnSound2D(World, S_Wind);
-	if (AC_Wind) AC_Wind->AddToRoot();
 	AC_Rain = UGameplayStatics::SpawnSound2D(World, S_Rain);
-	if (AC_Rain) AC_Rain->AddToRoot();
 
 	AC_Wind->SetActive(false);
 	AC_Rain->SetActive(false);

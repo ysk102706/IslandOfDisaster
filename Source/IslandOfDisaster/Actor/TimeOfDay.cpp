@@ -25,12 +25,14 @@ void ATimeOfDay::BeginPlay()
 {
 	Super::BeginPlay();
 
-	TActorIterator<ADirectionalLight> It(GetWorld());
-	while (!(*It)->ActorHasTag("SunLight")) ++It;
+	TActorIterator<ADirectionalLight> Sun(GetWorld());
+	while (!(*Sun)->ActorHasTag("SunLight")) ++Sun;
 
-	SunLight = *It;
-	++It;
-	MoonLight = *It;
+	TActorIterator<ADirectionalLight> Moon(GetWorld());
+	while (!(*Moon)->ActorHasTag("MoonLight")) ++Moon;
+
+	SunLight = *Sun;
+	MoonLight = *Moon;
 
 	PostProcessVolume = *TActorIterator<APostProcessVolume>(GetWorld());
 

@@ -40,7 +40,6 @@ void ASpawner::Spawn()
 			FRotator Rot = GetActorRotation();
 
 			auto MultiItem = Cast<AMultipleItem>(GetWorld()->SpawnActor(MultiItems[Idx], &Pos, &Rot));
-			MultiItem->AddToRoot();
 
 			MultiItem->Spawner = this;
 		}

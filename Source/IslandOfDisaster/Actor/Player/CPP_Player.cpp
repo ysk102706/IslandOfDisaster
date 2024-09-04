@@ -58,7 +58,6 @@ void ACPP_Player::BeginPlay()
 	SetActorLocation(FVector(62250.0, 40000.0, 990));
 
 	Inventory = NewObject<AInventory>();
-	Inventory->AddToRoot();
 
 	Inventory->SetWorld(GetWorld());
 	Inventory->SetNoneItemTexture(NoneItemTexture);

@@ -36,9 +36,13 @@ public:
 	TSubclassOf<class UHelpUI> HelpWidget;
 
 private:
+	UPROPERTY()
 	TObjectPtr<UUserWidget> PlayerInfoObject;
+	UPROPERTY()
 	TObjectPtr<UUserWidget> ManufactureObject;
+	UPROPERTY()
 	TObjectPtr<UUserWidget> TitleObject;
+	UPROPERTY()
 	TObjectPtr<UUserWidget> HelpObject;
 
 };

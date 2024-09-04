@@ -115,6 +115,7 @@ public:
 	UPROPERTY(EditAnywhere, Category=Shake)
 	TSubclassOf<class ULegacyCameraShake> CameraShake;
 
+	UPROPERTY()
 	TObjectPtr<AInventory> Inventory;
 
 	bool IsJumpStart;

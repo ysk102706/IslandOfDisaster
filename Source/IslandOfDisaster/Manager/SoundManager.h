@@ -56,7 +56,9 @@ public:
 	TObjectPtr<USoundBase> S_SignalFlare;
 
 private:
+	UPROPERTY()
 	TObjectPtr<UAudioComponent> AC_Wind;
+	UPROPERTY()
 	TObjectPtr<UAudioComponent> AC_Rain;
 	
 };
