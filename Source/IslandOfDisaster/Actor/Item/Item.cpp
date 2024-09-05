@@ -5,6 +5,7 @@
 #include "../../Manager/Managers.h"
 #include "../../Manager/DataLoadManager.h"
 #include "../Player/CPP_Player.h"
+#include "../Player/CPP_PlayerState.h"
 #include "Spawner.h"
 #include "Inventory.h"
 
@@ -16,8 +17,9 @@ AItem::AItem()
 void AItem::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	Mesh = FindComponentByClass<UStaticMeshComponent>();
+
 	IsLoaded = false;
 
 	NotFocused();
@@ -48,9 +50,18 @@ void AItem::Focused()
 	if (!IsFocused && !IsConstructPoint && !Constructed) {
 		IsFocused = true;
 		IsNotFocused = false;
-		
+
+		int MatCnt = 0;
 		Mesh->bRenderCustomDepth = true;
-		Mesh->SetMaterial(0, FocusedMaterial);
+		for (int i = 0; i < Mesh->GetNumMaterials(); i++) Mesh->SetMaterial(i, FocusedMaterials[MatCnt++]);
+
+		if (Mesh->GetNumChildrenComponents()) {
+			auto SM = Cast<UStaticMeshComponent>(Mesh->GetChildComponent(0));
+			if (SM) {
+				SM->bRenderCustomDepth = true;
+				for (int i = 0; i < SM->GetNumMaterials(); i++) SM->SetMaterial(i, FocusedMaterials[MatCnt++]);
+			}
+		}
 	}
 }
 
@@ -60,8 +71,17 @@ void AItem::NotFocused()
 		IsNotFocused = true;
 		IsFocused = false;
 
+		int MatCnt = 0;
 		Mesh->bRenderCustomDepth = false;
-		Mesh->SetMaterial(0, DefaultMaterial);
+		for (int i = 0; i < Mesh->GetNumMaterials(); i++) Mesh->SetMaterial(i, DefaultMaterials[MatCnt++]);
+
+		if (Mesh->GetNumChildrenComponents()) {
+			auto SM = Cast<UStaticMeshComponent>(Mesh->GetChildComponent(0));
+			if (SM) {
+				SM->bRenderCustomDepth = false;
+				for (int i = 0; i < SM->GetNumMaterials(); i++) SM->SetMaterial(i, DefaultMaterials[MatCnt++]);
+			}
+		}
 	}
 }
 
@@ -70,13 +90,14 @@ bool AItem::Picked()
 	if (!IsLoaded) UManagers::Get(GetWorld())->DataLoad()->LoadItems(Id, this);
 	if (Constructed) return false;
 	if (UManagers::Get(GetWorld())->Player()->Inventory->AddItem(this)) {
+		SetPhysics(false);
 		SetActorLocation(FVector(0, 0, -100));
 		Mesh->SetWorldLocation(FVector(0, 0, -100));
-		SetPhysics(false);
 
 		if (Spawner) {
 			Spawner->IsSpawned = false;
 			Spawner->SpawnedActor = nullptr;
+			UManagers::Get(GetWorld())->Player()->GetController()->GetPlayerState<ACPP_PlayerState>()->SpawnCnt--;
 		}
 
 		return true;
@@ -88,32 +109,47 @@ void AItem::Droped()
 {
 	if (!IsLoaded) UManagers::Get(GetWorld())->DataLoad()->LoadItems(Id, this);
 	auto Player = UManagers::Get(GetWorld())->Player();
-	FVector Pos = Player->GetActorLocation() + FVector(0, 0, 60);
-	SetActorLocation(Pos);
+	FVector Pos = Player->GetActorLocation() + FVector(0, 0, 80);
 	SetPhysics(true);
+	SetActorLocation(Pos);
 	Mesh->SetWorldLocation(Pos);
 	Mesh->AddVelocityChangeImpulseAtLocation(UManagers::Get(GetWorld())->Player()->GetForwardVector() * 500, Pos);
 }
 
 void AItem::Construct(FVector Pos)
 {
-	SetPhysics(false);
+	SetPhysics(true);
 	SetActorLocation(Pos);
 	SetWorldLocation(Pos);
 
-	Mesh->SetCollisionProfileName(TEXT("BlockAllDynamic"));
+	Mesh->SetEnableGravity(false);
+	Mesh->SetCollisionProfileName(TEXT("IgnoreWorldStatic"));
+	Mesh->SetWorldRotation(FRotator(0, 0, 0));
+
+	if (Mesh->GetNumChildrenComponents()) {
+		auto SM = Cast<UStaticMeshComponent>(Mesh->GetChildComponent(0));
+		if (SM) {
+			Mesh->SetSimulatePhysics(true);
+			SM->SetCollisionProfileName(TEXT("IgnoreWorldStatic"));
+			Mesh->SetEnableGravity(false);
+		}
+	}
 
 	Constructed = true;
 }
 
 void AItem::ConstructPoint(bool Value)
 {
-	Mesh->SetMaterial(0, Value ? ConstructAvailableMaterial : ConstructUnavailableMaterial);
+	for (int i = 0; i < Mesh->GetNumMaterials(); i++) Mesh->SetMaterial(i, Value ? ConstructAvailableMaterial : ConstructUnavailableMaterial);
+
+	if (Mesh->GetNumChildrenComponents()) {
+		auto SM = Cast<UStaticMeshComponent>(Mesh->GetChildComponent(0));
+		if (SM) for (int i = 0; i < SM->GetNumMaterials(); i++) SM->SetMaterial(i, Value ? ConstructAvailableMaterial : ConstructUnavailableMaterial);
+	}
 }
 
 void AItem::DestroyActor()
 {
-	RemoveFromRoot();
 	Destroy();
 }
 
@@ -123,6 +159,6 @@ void AItem::SetPhysics(bool Value)
 }
 
 void AItem::SetWorldLocation(FVector Pos)
-{ 
+{
 	Mesh->SetWorldLocation(Pos);
 }

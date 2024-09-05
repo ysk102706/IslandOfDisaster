@@ -4,10 +4,14 @@
 #include "UIManager.h"
 #include "../UI/PlayerInfoUI.h"
 #include "../UI/ManufactureUI.h"
+#include "../UI/TitleUI.h"
+#include "../UI/HelpUI.h"
 
-#define CreateOrSetWidget(Object, Type) \
-	if (!Type##Object) Type##Object = CreateWidget<U##Type##UI>(GetWorld(), Type##Widget); \
-	Object = Type##Object; \
+#define CreateOrSetWidget(WidgetObject, Type) \
+	if (!Type##Object) {\
+		Type##Object = CreateWidget<U##Type##UI>(GetWorld(), Type##Widget); \
+	}\
+	WidgetObject = Type##Object; \
 
 UUserWidget* UUIManager::GetWidget(EWidgetType Type) {
 	UUserWidget* Object = nullptr;
@@ -18,6 +22,12 @@ UUserWidget* UUIManager::GetWidget(EWidgetType Type) {
 		break;
 	case EWidgetType::Manufacture:
 		CreateOrSetWidget(Object, Manufacture);
+		break;
+	case EWidgetType::Title:
+		CreateOrSetWidget(Object, Title);
+		break;
+	case EWidgetType::Help:
+		CreateOrSetWidget(Object, Help);
 		break;
 	}
 

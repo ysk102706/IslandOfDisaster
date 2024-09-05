@@ -10,8 +10,9 @@
 #include "../Actor/Weather.h"
 #include "../Actor/TimeOfDay.h"
 #include "FXManager.h"
+#include "SoundManager.h"
 
-#define InifManager(Type) \
+#define InitManager(Type) \
 	if (Type##ManagerClass->StaticClass()) Type##ManagerObject = NewObject<U##Type##Manager>(this, Type##ManagerClass);\
 	else Type##ManagerObject = Type##ManagerClass.GetDefaultObject();\
 
@@ -20,6 +21,7 @@ UManagers::UManagers() {
 	DataLoadManagerClass = UDataLoadManager::StaticClass();
 	DisasterManagerClass = UDisasterManager::StaticClass();
 	FXManagerClass = UFXManager::StaticClass();
+	SoundManagerClass = USoundManager::StaticClass();
 }
 
 UUIManager* UManagers::UI() {
@@ -39,6 +41,11 @@ UDisasterManager* UManagers::Disaster()
 UFXManager* UManagers::FX()
 {
 	return FXManagerObject;
+}
+
+USoundManager* UManagers::Sound()
+{
+	return SoundManagerObject;
 }
 
 UManagers* UManagers::Get(const UWorld* World)
@@ -67,11 +74,12 @@ TObjectPtr<ATimeOfDay> UManagers::TimeOfDay()
 	return TimeOfDayObject;
 }
 
-void UManagers::InitManager(const UWorld* World) {
-	InifManager(UI);
-	InifManager(DataLoad);
-	InifManager(Disaster);
-	InifManager(FX);
+void UManagers::InitManagers(const UWorld* World) {
+	InitManager(UI);
+	InitManager(DataLoad);
+	InitManager(Disaster);
+	InitManager(FX);
+	InitManager(Sound);
 
 	WeatherObject = Cast<AWeather>(UGameplayStatics::GetActorOfClass(GetWorld(), AWeather::StaticClass()));
 	TimeOfDayObject = Cast<ATimeOfDay>(UGameplayStatics::GetActorOfClass(GetWorld(), ATimeOfDay::StaticClass()));

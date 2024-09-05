@@ -15,11 +15,13 @@
 #include "../Actor/Player/CPP_Player.h"
 #include "../Actor/Item/Inventory.h"
 #include "../Manager/DataLoadManager.h"
+#include "../Manager/SoundManager.h"
 
 void UManufactureUI::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	BManufacture->OnClicked.Clear();
 	BManufacture->OnClicked.AddDynamic(this, &UManufactureUI::Manufacture);
 }
 
@@ -40,7 +42,7 @@ void UManufactureUI::AddManufacturedItem(UTexture2D* Texture, int Id, FString Na
 			SizeBox->AddChild(Item);
 
 			if (auto HB_Slot = Cast<UHorizontalBoxSlot>(ManufacturedItemHorizontalBoxs.Top()->AddChild(SizeBox))) {
-				HB_Slot->SetPadding(FMargin(0, ManufacturedItemListLineSpace, ManufacturedItemListLineSpace, 0));
+				HB_Slot->SetPadding(FMargin(0, 0, ManufacturedItemListLineSpace, ManufacturedItemListLineSpace));
 			}
 		}
 	}
@@ -79,7 +81,7 @@ void UManufactureUI::AddIngredientItem(UTexture2D* Texture, FString Name, FStrin
 			SizeBox->AddChild(Item);
 
 			if (auto HB_Slot = Cast<UHorizontalBoxSlot>(IngredientItemHorizontalBoxs.Top()->AddChild(SizeBox))) {
-				HB_Slot->SetPadding(FMargin(0, IngredientItemListLineSpace, IngredientItemListLineSpace, 0));
+				HB_Slot->SetPadding(FMargin(0, 0, IngredientItemListLineSpace, IngredientItemListLineSpace));
 			}
 		}
 	}
@@ -103,6 +105,8 @@ void UManufactureUI::Manufacture()
 				if (!Item->Picked()) Item->Droped();
 			}
 		}
+
+		UManagers::Get(GetWorld())->Sound()->PlaySingleSound(GetWorld(), ESound::S_Manufacture);
 	}
 }
 

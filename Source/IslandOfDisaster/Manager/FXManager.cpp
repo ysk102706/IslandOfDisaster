@@ -10,7 +10,7 @@
 
 void UFXManager::Tick(const UWorld* World)
 {
-	if (NSC_Rain) NSC_Rain->SetWorldLocation(UManagers::Get(GetWorld())->Player()->GetActorLocation());
+	if (NSC_Rain) NSC_Rain->SetWorldLocation(UManagers::Get(GetWorld())->Player()->GetActorLocation() + FVector(0, 0, 3000));
 	if (NSC_Wind) NSC_Wind->SetWorldLocation(UManagers::Get(GetWorld())->Player()->GetActorLocation());
 }
 
@@ -22,19 +22,19 @@ TObjectPtr<UNiagaraSystem> UFXManager::GetFX(EFXType Type)
 	case EFXType::FX_Asteroid:
 		FX = NS_Asteroid;
 		break;
-	case EFXType::Gas:
+	case EFXType::FX_Gas:
 		FX = NS_Gas;
 		break;
-	case EFXType::Rain:
+	case EFXType::FX_Rain:
 		FX = NS_Rain;
 		break;
-	case EFXType::ShootingStar:
+	case EFXType::FX_ShootingStar:
 		FX = NS_ShootingStar;
 		break;
-	case EFXType::Star:
+	case EFXType::FX_Star:
 		FX = NS_Star;
 		break;
-	case EFXType::Wind:
+	case EFXType::FX_Wind:
 		FX = NS_Wind;
 		break;
 	}
@@ -45,16 +45,16 @@ TObjectPtr<UNiagaraSystem> UFXManager::GetFX(EFXType Type)
 void UFXManager::SetComponent(EFXType Type, TObjectPtr<UNiagaraComponent> Component)
 {
 	switch (Type) {
-	case EFXType::Rain:
+	case EFXType::FX_Rain:
 		NSC_Rain = Component;
 		break;
-	case EFXType::ShootingStar:
+	case EFXType::FX_ShootingStar:
 		NSC_ShootingStar = Component;
 		break;
-	case EFXType::Star:
+	case EFXType::FX_Star:
 		NSC_Star = Component;
 		break;
-	case EFXType::Wind:
+	case EFXType::FX_Wind:
 		NSC_Wind = Component;
 		break;
 	}
@@ -65,16 +65,16 @@ TObjectPtr<UNiagaraComponent> UFXManager::GetComponent(EFXType Type)
 	TObjectPtr<UNiagaraComponent> NSC = nullptr;
 
 	switch (Type) {
-	case EFXType::Rain:
+	case EFXType::FX_Rain:
 		NSC = NSC_Rain;
 		break;
-	case EFXType::ShootingStar:
+	case EFXType::FX_ShootingStar:
 		NSC = NSC_ShootingStar;
 		break;
-	case EFXType::Star:
+	case EFXType::FX_Star:
 		NSC = NSC_Star;
 		break;
-	case EFXType::Wind:
+	case EFXType::FX_Wind:
 		NSC = NSC_Wind;
 		break;
 	}
@@ -89,9 +89,14 @@ void UFXManager::SpawnFX(const UWorld* World, EFXType Type, FVector Pos)
 	if (FX) SetComponent(Type, UNiagaraFunctionLibrary::SpawnSystemAtLocation(World, FX, Pos, FRotator(0, 0, 0))); 
 }
 
-void UFXManager::SetActiveFX(EFXType Type, bool Value)
+void UFXManager::SetActiveFX(const UWorld* World, EFXType Type, bool Value)
 {
 	TObjectPtr<UNiagaraComponent> NSC = GetComponent(Type);
 
-	if (NSC) NSC->SetVisibility(Value);
+	if (!NSC) {
+		SpawnFX(World, Type, FVector(0, 0, 0));
+		NSC = GetComponent(Type);
+	}
+
+	NSC->SetVisibility(Value);
 }

@@ -12,7 +12,19 @@
 #define SetItemTexture(Idx, Texture) IMG_Item##Idx->SetBrushFromTexture(Texture)
 #define SetCntText(Idx, Text) CNT_Item##Idx->SetText(FText::FromString(Text))
 
-void UPlayerInfoUI::SetHP(float MaxHP, float CurHP) {
+void UPlayerInfoUI::Init(int Idx)
+{
+	for (int i = 6; i > 0; i--) ChangeInventorySelectItem(i, i - 1);
+	ChangeInventorySelectItem(0, Idx);
+}
+
+void UPlayerInfoUI::SetAllItem(UTexture2D* Texture)
+{
+	for (int i = 0; i < 7; i++) ChangeInventoryItemTexture(i, Texture);
+}
+
+void UPlayerInfoUI::SetHP(float MaxHP, float CurHP) 
+{
 	HPBar->SetPercent(CurHP / MaxHP);
 }
 

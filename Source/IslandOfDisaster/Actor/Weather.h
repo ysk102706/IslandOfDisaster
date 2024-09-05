@@ -33,13 +33,19 @@ private:
 	float Lerp(float StartValue, float TargetValue, float Ratio);
 	FLinearColor LerpColor(FLinearColor StartValue, FLinearColor TargetValue, float Ratio);
 
+	UPROPERTY()
 	TObjectPtr<class ASkyAtmosphere> SkyAtmosphere;
+	UPROPERTY()
 	TObjectPtr<class APostProcessVolume> PostProcessVolume;
+	UPROPERTY()
 	TObjectPtr<class AVolumetricCloud> VolumetricCloud;
 
+	UPROPERTY()
 	TObjectPtr<UMaterialInstanceDynamic> DMI;
 
+	UPROPERTY()
 	FLinearColor CurrentRayleighScattering;
+	UPROPERTY()
 	FLinearColor TargetRayleighScattering;
 
 	float CurrentExposureCompensationValue;

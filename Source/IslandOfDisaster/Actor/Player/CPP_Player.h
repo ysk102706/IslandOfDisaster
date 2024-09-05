@@ -10,6 +10,14 @@ class AItem;
 class AInventory;
 class AMultipleItem;
 
+UENUM(Blueprintable, BlueprintType)
+enum EEscapeType {
+	None			UMETA(DisplayName = "None"),
+	Ship			UMETA(DisplayName = "Ship"),
+	HotAirBalloon	UMETA(DisplayName = "HotAirBalloon"),
+	FlareGun		UMETA(DisplayName = "FlareGun")
+};
+
 UCLASS()
 class ISLANDOFDISASTER_API ACPP_Player : public ACharacter
 {
@@ -41,6 +49,8 @@ public:
 	void Drink(const FInputActionValue& Value);
 	UFUNCTION()
 	void Eat(const FInputActionValue& Value);
+	UFUNCTION()
+	void Escape(const FInputActionValue& Value);
 
 	UFUNCTION()
 	void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
@@ -49,6 +59,7 @@ public:
 	void ConstructCheckRayCast();
 	void DrinkCheckRayCast();
 	void MultipleItemCheckRayCast();
+	EEscapeType EscapeCheckRayCast();
 
 	void Shake();
 
@@ -57,21 +68,21 @@ public:
 	TObjectPtr<UTexture2D> GetSelectedItemBG();
 	TObjectPtr<UTexture2D> GetNotSelectedItemBG();
 
-	UPROPERTY(EditAnywhere, Category=Input)
+	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputMappingContext* IMC_Default;
-	UPROPERTY(EditAnywhere, Category=Input)
+	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputAction* IA_Move;
-	UPROPERTY(EditAnywhere, Category=Input)
+	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputAction* IA_Camera;
-	UPROPERTY(EditAnywhere, Category=Input)
+	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputAction* IA_Pick;
-	UPROPERTY(EditAnywhere, Category=Input)
+	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputAction* IA_Drop;
-	UPROPERTY(EditAnywhere, Category=Input)
+	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputAction* IA_SelectItem;
-	UPROPERTY(EditAnywhere, Category=Input)
+	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputAction* IA_Manufacture;
-	UPROPERTY(EditAnywhere, Category=Input)
+	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputAction* IA_Construct;
 	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputAction* IA_Jump;
@@ -79,6 +90,8 @@ public:
 	class UInputAction* IA_Drink;
 	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputAction* IA_Eat;
+	UPROPERTY(EditAnywhere, Category = Input)
+	class UInputAction* IA_Escape;
 
 	UPROPERTY(EditAnywhere, Category=Ray)
 	float ItemCheckRayLength;
@@ -102,18 +115,27 @@ public:
 	UPROPERTY(EditAnywhere, Category=Shake)
 	TSubclassOf<class ULegacyCameraShake> CameraShake;
 
-	TObjectPtr<AInventory> Inventory;
+	UPROPERTY()
+	TObjectPtr<AInventory> Inventory; 
+
+	UPROPERTY(EditAnywhere, Category=GameMode)
+	TSubclassOf<class AIslandOfDisasterGameModeBase> GameMode;
 
 	bool IsJumpStart;
 	bool IsJumping;
 	bool IsJumpEnd;
 
+	void StopSun();
+
 private:
 	void ConstructCheckRayCastAction(FHitResult& Hit);
 
+	UPROPERTY()
 	TObjectPtr<class UCameraComponent> PlayerCamera;
 
+	UPROPERTY()
 	TObjectPtr<AItem> FocusedItem;
+	UPROPERTY()
 	TObjectPtr<AMultipleItem> FocusedMultipleItem;
 
 	bool IsOpenManufacture;
@@ -127,4 +149,10 @@ private:
 	float JumpEndTimer;
 
 	bool IsDrinkable;
+
+	bool IsCutScenePlay;
+	float CutSceneTimer;
+	float CutSceneTime;
+
+	bool IsAddManufacture;
 };

@@ -34,15 +34,20 @@ public:
 
 	TObjectPtr<AItem> GetSelectedItem();
 
+	int GetSelectedItemIdx();
+
 private:
+	UPROPERTY()
 	UWorld* World;
 
 	TArray<TObjectPtr<AItem>> Contents[7];
-	TMap<FString, int>* ContentMap;
+	TObjectPtr<TMap<FString, int>> ContentMap;
 	int SelectedItemIdx;
 
+	UPROPERTY()
 	TObjectPtr<UTexture2D> NoneItemTexture;
 
+	UPROPERTY()
 	AItem* ConstructPointObject;
 	bool IsConstruct;
 
