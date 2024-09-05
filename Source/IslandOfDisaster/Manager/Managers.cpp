@@ -12,10 +12,9 @@
 #include "FXManager.h"
 #include "SoundManager.h"
 
-#define InifManager(Type) \
+#define InitManager(Type) \
 	if (Type##ManagerClass->StaticClass()) Type##ManagerObject = NewObject<U##Type##Manager>(this, Type##ManagerClass);\
 	else Type##ManagerObject = Type##ManagerClass.GetDefaultObject();\
-	Type##ManagerObject->AddToRoot();
 
 UManagers::UManagers() {
 	UIManagerClass = UUIManager::StaticClass();
@@ -75,12 +74,12 @@ TObjectPtr<ATimeOfDay> UManagers::TimeOfDay()
 	return TimeOfDayObject;
 }
 
-void UManagers::InitManager(const UWorld* World) {
-	InifManager(UI);
-	InifManager(DataLoad);
-	InifManager(Disaster);
-	InifManager(FX);
-	InifManager(Sound);
+void UManagers::InitManagers(const UWorld* World) {
+	InitManager(UI);
+	InitManager(DataLoad);
+	InitManager(Disaster);
+	InitManager(FX);
+	InitManager(Sound);
 
 	WeatherObject = Cast<AWeather>(UGameplayStatics::GetActorOfClass(GetWorld(), AWeather::StaticClass()));
 	TimeOfDayObject = Cast<ATimeOfDay>(UGameplayStatics::GetActorOfClass(GetWorld(), ATimeOfDay::StaticClass()));

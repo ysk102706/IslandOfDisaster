@@ -8,11 +8,9 @@
 void USoundManager::Init(const UWorld* World)
 {
 	AC_Wind = UGameplayStatics::SpawnSound2D(World, S_Wind);
-	if (AC_Wind) AC_Wind->AddToRoot();
 	AC_Rain = UGameplayStatics::SpawnSound2D(World, S_Rain);
-	if (AC_Rain) AC_Rain->AddToRoot();
 
-	//AC_Wind->SetActive(false);
+	AC_Wind->SetActive(false);
 	AC_Rain->SetActive(false);
 }
 
@@ -65,4 +63,9 @@ void USoundManager::PlayLoopSound(ESound Type)
 void USoundManager::StopLoopSound(ESound Type)
 {
 	GetAudioComponent(Type)->SetActive(false);
+}
+
+void USoundManager::SetSoundVolume(ESound Type, int Volume)
+{
+	GetAudioComponent(Type)->SetVolumeMultiplier(Volume * 0.33f);
 }

@@ -20,6 +20,8 @@ public:
 	float Random(float MinInclusive, float MaxExclusive);
 	FVector RandomCircle(FVector Center, float MaxRange); 
 
+	virtual void OpenLevelDisaster() {};
+
 	virtual void Effect1() {
 		Hours++; 
 		if (!(Hours % 24)) { IsChangeDay = true; }

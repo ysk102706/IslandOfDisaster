@@ -5,12 +5,17 @@
 #include "WaterBodyLakeActor.h"
 #include "EngineUtils.h"
 #include "Materials/MaterialInstance.h"
+#include "Kismet/GameplayStatics.h"
+
+void AEpidemic::OpenLevelDisaster()
+{
+	UGameplayStatics::OpenLevel(this, TEXT("Epidemic"));
+}
 
 void AEpidemic::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
 	WaterBodyLake = *TActorIterator<AWaterBodyLake> (GetWorld());
 	WaterBodyLake->SetWaterMaterial(WaterMaterials[Hours / 24]);
 }
@@ -38,7 +43,7 @@ void AEpidemic::Effect3()
 		int SpawnCount = Random(3, 7);
 
 		for (int i = 0; i < SpawnCount; i++) {
-			FVector Position = RandomCircle(SpawnPos, 200);
+			FVector Position = RandomCircle(SpawnPos, SpawnRange);
 			FRotator Rotation = FRotator(0, Random(0, 360), 0);
 
 			GetWorld()->SpawnActor(RottenFish, &Position, &Rotation);

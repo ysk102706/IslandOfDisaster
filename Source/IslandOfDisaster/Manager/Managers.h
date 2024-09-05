@@ -26,7 +26,7 @@ class ISLANDOFDISASTER_API UManagers : public UGameInstance
 public:
 	UManagers();
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "InitManger"))
-	void InitManager(const UWorld* World);
+	void InitManagers(const UWorld* World);
 	
 	UUIManager* UI();
 	UDataLoadManager* DataLoad();
@@ -42,6 +42,9 @@ public:
 
 	static UManagers* Get(const UWorld* World);
 
+	UPROPERTY()
+	TArray<TObjectPtr<AActor>> SpawnedItems;
+
 private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUIManager> UIManagerClass;
@@ -54,14 +57,22 @@ private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<USoundManager> SoundManagerClass;
 	
+	UPROPERTY()
 	TObjectPtr<UUIManager> UIManagerObject;
+	UPROPERTY()
 	TObjectPtr<UDataLoadManager> DataLoadManagerObject;
+	UPROPERTY()
 	TObjectPtr<UDisasterManager> DisasterManagerObject;
+	UPROPERTY()
 	TObjectPtr<UFXManager> FXManagerObject;
+	UPROPERTY()
 	TObjectPtr<USoundManager> SoundManagerObject;
+	UPROPERTY()
 	TObjectPtr<ACPP_Player> PlayerObject;
 
+	UPROPERTY()
 	TObjectPtr<AWeather> WeatherObject;
+	UPROPERTY()
 	TObjectPtr<ATimeOfDay> TimeOfDayObject;
 
 };

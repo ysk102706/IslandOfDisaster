@@ -17,13 +17,21 @@
 #include "../../Manager/DataLoadManager.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/SceneCaptureComponent2D.h"
-#include "Camera/CameraShake.h"
+#include "LegacyCameraShake.h"
 #include "../../Manager/FXManager.h"
 #include "Components/CapsuleComponent.h"
 #include "../Item/Item.h"
 #include "../Item/MultipleItem.h"
 #include "../Item/Inventory.h"
 #include "../../Manager/SoundManager.h"
+#include "../../UI/PlayerInfoUI.h"
+#include "WaterBodyLakeComponent.h"
+#include "WaterBodyOceanComponent.h"
+#include "LevelSequenceActor.h"
+#include "LevelSequencePlayer.h"
+#include "EngineUtils.h"
+#include "../../Manager/DisasterManager.h"
+#include "../Disaster/Disaster.h"
 
 ACPP_Player::ACPP_Player()
 {
@@ -46,6 +54,8 @@ void ACPP_Player::BeginPlay()
 {
 	Super::BeginPlay();
 
+	GetController()->GetPlayerState<ACPP_PlayerState>()->BeginPlay();
+
 	UManagers::Get(GetWorld())->SetPlayer(this);
 
 	SetActorLocation(FVector(62250.0, 40000.0, 990));
@@ -55,8 +65,6 @@ void ACPP_Player::BeginPlay()
 	Inventory->SetWorld(GetWorld());
 	Inventory->SetNoneItemTexture(NoneItemTexture);
 	Inventory->SelectItem(0);
-
-	UManagers::Get(GetWorld())->DataLoad()->LoadManufacturedItemList(GetWorld());
 
 	CQP.AddIgnoredActor(this->GetOwner());
 
@@ -68,7 +76,9 @@ void ACPP_Player::BeginPlay()
 		}
 	}
 
-	Cast<UManagers>(GetGameInstance())->UI()->ShowWidget(EWidgetType::PlayerInfo);
+	UManagers::Get(GetWorld())->UI()->ShowWidget(EWidgetType::PlayerInfo);
+	Cast<UPlayerInfoUI>(UManagers::Get(GetWorld())->UI()->GetWidget(EWidgetType::PlayerInfo))->Init(0);
+	Cast<UPlayerInfoUI>(UManagers::Get(GetWorld())->UI()->GetWidget(EWidgetType::PlayerInfo))->SetAllItem(NoneItemTexture);
 
 	UManagers::Get(GetWorld())->FX()->SpawnFX(GetWorld(), EFXType::FX_Star, FVector(0, 0, 0));
 	UManagers::Get(GetWorld())->FX()->SetActiveFX(GetWorld(), EFXType::FX_Star, false);
@@ -77,6 +87,8 @@ void ACPP_Player::BeginPlay()
 	JumpEndTimer = 0;
 
 	UManagers::Get(GetWorld())->Sound()->Init(GetWorld());
+
+	IsAddManufacture = false;
 }
 
 void ACPP_Player::Tick(float DeltaTime)
@@ -112,23 +124,35 @@ void ACPP_Player::Tick(float DeltaTime)
 			JumpEndTimer = 0;
 		}
 	}
+
+	if (IsCutScenePlay) {
+		CutSceneTimer += DeltaTime;
+		if (CutSceneTimer >= CutSceneTime) {
+			IsCutScenePlay = false;
+			CutSceneTimer = 0;
+
+			GetController()->GetPlayerState<ACPP_PlayerState>()->OpenLevelDisaster();
+		}
+	}
 }
 
 void ACPP_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	
 	auto EIC = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	if (EIC) {
 		EIC->BindAction(IA_Move, ETriggerEvent::Triggered, this, &ACPP_Player::Move);
 		EIC->BindAction(IA_Camera, ETriggerEvent::Triggered, this, &ACPP_Player::Camera);
-		EIC->BindAction(IA_Pick, ETriggerEvent::Triggered, this, &ACPP_Player::PickItem);
-		EIC->BindAction(IA_Drop, ETriggerEvent::Triggered, this, &ACPP_Player::DropItem);
-		EIC->BindAction(IA_SelectItem, ETriggerEvent::Triggered, this, &ACPP_Player::SelectItem);
+		EIC->BindAction(IA_Pick, ETriggerEvent::Started, this, &ACPP_Player::PickItem);
+		EIC->BindAction(IA_Drop, ETriggerEvent::Started, this, &ACPP_Player::DropItem);
+		EIC->BindAction(IA_SelectItem, ETriggerEvent::Started, this, &ACPP_Player::SelectItem);
 		EIC->BindAction(IA_Manufacture, ETriggerEvent::Started, this, &ACPP_Player::Manufacture);
 		EIC->BindAction(IA_Construct, ETriggerEvent::Started, this, &ACPP_Player::Construct);
 		EIC->BindAction(IA_Jump, ETriggerEvent::Started, this, &ACPP_Player::IF_Jump);
 		EIC->BindAction(IA_Drink, ETriggerEvent::Started, this, &ACPP_Player::Drink);
 		EIC->BindAction(IA_Eat, ETriggerEvent::Started, this, &ACPP_Player::Eat);
+		EIC->BindAction(IA_Escape, ETriggerEvent::Started, this, &ACPP_Player::Escape);
 	}
 }
 
@@ -174,6 +198,10 @@ void ACPP_Player::Manufacture(const FInputActionValue& Value)
 		IsOpenManufacture = !IsOpenManufacture;
 		if (IsOpenManufacture) {
 			UManagers::Get(GetWorld())->UI()->ShowWidget(EWidgetType::Manufacture);
+			if (!IsAddManufacture) {
+				UManagers::Get(GetWorld())->DataLoad()->LoadManufacturedItemList(GetWorld());
+				IsAddManufacture = true;
+			}
 			UManagers::Get(GetWorld())->DataLoad()->LoadSelectedManufacturedItem(GetWorld(), 1);
 			UManagers::Get(GetWorld())->DataLoad()->LoadIngredientItems(GetWorld(), 1);
 		}
@@ -184,7 +212,10 @@ void ACPP_Player::Manufacture(const FInputActionValue& Value)
 
 void ACPP_Player::Construct(const FInputActionValue& Value)
 {
-	if (IsConstruct) Inventory->ConstructItem();
+	if (IsConstruct) {
+		Inventory->ConstructItem();
+		UManagers::Get(GetWorld())->Sound()->PlaySingleSound(GetWorld(), ESound::S_Construct);
+	}
 }
 
 void ACPP_Player::IF_Jump(const FInputActionValue& Value)
@@ -198,14 +229,58 @@ void ACPP_Player::IF_Jump(const FInputActionValue& Value)
 
 void ACPP_Player::Drink(const FInputActionValue& Value)
 {
-	if (IsDrinkable) Cast<ACPP_PlayerState>(UGameplayStatics::GetPlayerState(GetWorld(), 0))->IncreaseThirsty(10);
+	if (IsDrinkable) {
+		Cast<ACPP_PlayerState>(UGameplayStatics::GetPlayerState(GetWorld(), 0))->IncreaseThirsty(3);
+		UManagers::Get(GetWorld())->Sound()->PlaySingleSound(GetWorld(), ESound::S_Drink);
+	}
 }
 
 void ACPP_Player::Eat(const FInputActionValue& Value)
 {
 	if (Inventory->GetSelectedItem() && Inventory->GetSelectedItem()->Name == TEXT("고기")) {
 		Inventory->Consume(TEXT("고기"), 1);
-		Cast<ACPP_PlayerState>(UGameplayStatics::GetPlayerState(GetWorld(), 0))->IncreaseHunger(10);
+		Cast<ACPP_PlayerState>(UGameplayStatics::GetPlayerState(GetWorld(), 0))->IncreaseHunger(5);
+		UManagers::Get(GetWorld())->Sound()->PlaySingleSound(GetWorld(), ESound::S_Eat);
+	}
+}
+
+void ACPP_Player::Escape(const FInputActionValue& Value)
+{
+	EEscapeType Type = EEscapeType::None;
+
+	if (Inventory->GetSelectedItem() && Inventory->GetSelectedItem()->Name == TEXT("신호탄")) Type = EEscapeType::FlareGun;
+	
+	if (Type == EEscapeType::None) Type = EscapeCheckRayCast();
+
+	FName Tag = "";
+
+	switch (Type) {
+	case EEscapeType::Ship:
+		IsCutScenePlay = true;
+		CutSceneTimer = 0;
+		CutSceneTime = 10.5f;
+		Tag = "Ship";
+		break;
+	case EEscapeType::HotAirBalloon:
+		IsCutScenePlay = true;
+		CutSceneTimer = 0;
+		CutSceneTime = 10.5f;
+		Tag = "AirBalloon";
+		break;
+	case EEscapeType::FlareGun:
+		IsCutScenePlay = true;
+		CutSceneTimer = 0;
+		CutSceneTime = 15.5f;
+		Tag = "FlareGun";
+		break;
+	}
+
+	if (Tag != "") {
+		UManagers::Get(GetWorld())->UI()->HideWidget(EWidgetType::PlayerInfo);
+
+		TActorIterator<ALevelSequenceActor> It(GetWorld());
+		while (!(*It)->ActorHasTag(Tag)) ++It;
+		(*It)->SequencePlayer->Play();
 	}
 }
 
@@ -269,8 +344,7 @@ void ACPP_Player::DrinkCheckRayCast()
 	//DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 0.5f, 0, 1);
 
 	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_GameTraceChannel3, CQP)) {
-		auto Label = Hit.GetActor()->GetActorLabel();
-		if (Label == "WaterBodyLake") IsDrinkable = true;
+		if (Hit.GetActor()->FindComponentByClass<UWaterBodyLakeComponent>()) IsDrinkable = true;
 		else IsDrinkable = false;
 	}
 	else IsDrinkable = false;
@@ -290,15 +364,36 @@ void ACPP_Player::MultipleItemCheckRayCast()
 		if (FocusedMultipleItem && FocusedMultipleItem != MultipleItem) FocusedMultipleItem->NotFocused();
 		FocusedMultipleItem = MultipleItem;
 	}
-	else if (FocusedItem) {
+	else if (FocusedMultipleItem) {
 		FocusedMultipleItem->NotFocused();
 		FocusedMultipleItem = nullptr;
 	}
 }
 
+EEscapeType ACPP_Player::EscapeCheckRayCast()
+{
+	FHitResult Hit;
+
+	FVector Forward = GetForwardVector();
+	FVector Start = PlayerCamera->GetComponentLocation();
+	FVector End = Start + Forward * ItemCheckRayLength;
+
+	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, CQP)) {
+		auto Item = Cast<AItem>(Hit.GetActor());
+		if (Item && Item->Constructed) {
+			if (Item->ActorHasTag("BP_Ship")) return EEscapeType::Ship;
+			else if (Item->ActorHasTag("BP_HotAirBalloon")) return EEscapeType::HotAirBalloon;
+		}
+	}
+	return EEscapeType::None;
+}
+
 void ACPP_Player::Shake()
 {
-	if (auto PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0)) PlayerController->ClientStartCameraShake(CameraShake);
+	if (auto PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0)) {
+		PlayerController->ClientStartCameraShake(CameraShake);
+		UManagers::Get(GetWorld())->Sound()->PlaySingleSound(GetWorld(), ESound::S_Earthquake);
+	}
 }
 
 FVector ACPP_Player::GetForwardVector()
@@ -318,7 +413,7 @@ TObjectPtr<UTexture2D> ACPP_Player::GetNotSelectedItemBG()
 
 void ACPP_Player::OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (OtherActor->GetActorLabel() == "Landscape" || OtherActor->GetActorLabel() == "WaterBodyLake" || OtherActor->GetActorLabel() == "WaterBodyOcean") {
+	if (OtherActor->ActorHasTag("Landscape") || OtherActor->FindComponentByClass<UWaterBodyLakeComponent>() || OtherActor->FindComponentByClass<UWaterBodyOceanComponent>()) {
 		if (IsJumpStart || IsJumping) {
 			IsJumpEnd = true;
 			IsJumping = false;
@@ -332,5 +427,9 @@ void ACPP_Player::ConstructCheckRayCastAction(FHitResult& Hit)
 	auto Actor = Hit.GetActor();
 	auto ConstructPoint = Cast<AItem>(Actor);
 	if (ConstructPoint && ConstructPoint->IsConstructPoint) CQP.AddIgnoredActor(ConstructPoint);
-	else if (Actor) IsConstruct = Inventory->ShowConstructPoint(Actor->GetActorLabel(), Hit.Location);
+	else if (Actor) {
+		if (Actor->ActorHasTag("Landscape")) IsConstruct = Inventory->ShowConstructPoint("Landscape", Hit.Location);
+		else if (Actor->FindComponentByClass<UWaterBodyOceanComponent>()) IsConstruct = Inventory->ShowConstructPoint("WaterBodyOcean", Hit.Location);
+		else if (Actor->ActorHasTag("BP_HotAirBalloonLandingSite")) IsConstruct = Inventory->ShowConstructPoint("BP_HotAirBalloonLandingSite", Hit.Location);
+	}
 }

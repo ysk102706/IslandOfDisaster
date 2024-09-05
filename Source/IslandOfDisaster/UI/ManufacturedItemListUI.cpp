@@ -12,6 +12,7 @@ void UManufacturedItemListUI::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	BSelect->OnClicked.Clear();
 	BSelect->OnClicked.AddDynamic(this, &UManufacturedItemListUI::Select);
 }
 

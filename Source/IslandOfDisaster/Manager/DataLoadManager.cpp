@@ -9,7 +9,7 @@
 #include "../Actor/Item/Inventory.h"
 #include "../Actor/Item/Item.h"
 
-#define Path FPaths::ProjectContentDir() + "Database/ItemData.db"
+#define Path FPaths::ConvertRelativePathToFull(FPaths::ProjectContentDir()) + "Database/ItemData.db"
 
 void UDataLoadManager::LoadManufacturedItemList(const UWorld* World)
 {
@@ -105,10 +105,11 @@ TObjectPtr<AItem> UDataLoadManager::SpawnItemActor(UWorld* World, int Id)
 	FRotator Rotation = FRotator(0, 0, 0);
 	
 	auto Actor = World->SpawnActor(Items[Id], &Position, &Rotation);
-	Actor->AddToRoot();
+	UManagers::Get(GetWorld())->SpawnedItems.Add(Actor);
 
 	auto Item = Cast<AItem>(Actor);
 	LoadItems(Id, Item);
+
 	return Item;
 }
 

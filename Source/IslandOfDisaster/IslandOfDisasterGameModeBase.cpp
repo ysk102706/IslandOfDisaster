@@ -17,5 +17,5 @@ void AIslandOfDisasterGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UManagers::Get(GetWorld())->InitManager(GetWorld());
+	UManagers::Get(GetWorld())->InitManagers(GetWorld());
 }

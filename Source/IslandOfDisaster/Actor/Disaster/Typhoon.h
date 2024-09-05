@@ -15,8 +15,13 @@ class ISLANDOFDISASTER_API ATyphoon : public ADisaster
 	GENERATED_BODY()
 	
 public:
+	virtual void OpenLevelDisaster() override;
+
 	virtual void Effect1() override;
 	virtual void Effect2() override;
 	virtual void Effect3() override;
+
+private:
+	int DarkPercent;
 
 };

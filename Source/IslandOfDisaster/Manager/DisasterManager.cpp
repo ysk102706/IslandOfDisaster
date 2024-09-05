@@ -3,6 +3,12 @@
 
 #include "DisasterManager.h"
 #include "../Actor/Disaster/Disaster.h"
+#include "Kismet/GameplayStatics.h"
+#include "../Actor/Disaster/Tsunami.h"
+#include "../Actor/Disaster/Volcano.h"
+#include "../Actor/Disaster/Epidemic.h"
+#include "../Actor/Disaster/Asteroid.h"
+#include "../Actor/Disaster/Typhoon.h"
 
 void UDisasterManager::SetDisaster(EDisasterType Type)
 {

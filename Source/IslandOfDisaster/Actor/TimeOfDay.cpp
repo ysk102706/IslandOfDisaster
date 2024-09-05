@@ -16,16 +16,23 @@
 ATimeOfDay::ATimeOfDay()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	IsLighting = false;
+	LightingTimer = 0;
 }
 
 void ATimeOfDay::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	TActorIterator<ADirectionalLight> It(GetWorld());
-	SunLight = *It;
-	++It;
-	MoonLight = *It;
+
+	TActorIterator<ADirectionalLight> Sun(GetWorld());
+	while (!(*Sun)->ActorHasTag("SunLight")) ++Sun;
+
+	TActorIterator<ADirectionalLight> Moon(GetWorld());
+	while (!(*Moon)->ActorHasTag("MoonLight")) ++Moon;
+
+	SunLight = *Sun;
+	MoonLight = *Moon;
 
 	PostProcessVolume = *TActorIterator<APostProcessVolume>(GetWorld());
 
@@ -36,6 +43,15 @@ void ATimeOfDay::BeginPlay()
 void ATimeOfDay::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (IsLighting) {
+		LightingTimer += DeltaTime;
+		if (LightingTimer >= 1.5f) {
+			IsLighting = false;
+			PostProcessVolume->Settings.AutoExposureBias = -1;
+			LightingTimer = 0;
+		}
+	}
 
 }
 
@@ -66,6 +82,12 @@ void ATimeOfDay::TimeToSunRotation(int Hours, int Minutes)
 
 	SunLight->SetActorRotation(FRotator((Hours - 6) * -15 + Minutes * -0.25f, 0, 0));
 	SM_Center->SetWorldRotation(FRotator(0, 90, (Hours - 6) * -15 + Minutes * -0.25f + 180));
+}
+
+void ATimeOfDay::NightLighting()
+{
+	IsLighting = true;
+	PostProcessVolume->Settings.AutoExposureBias = 2;
 }
 
 void ATimeOfDay::ReRender(ULightComponent& Component)

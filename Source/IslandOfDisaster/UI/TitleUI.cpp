@@ -5,6 +5,10 @@
 #include "Components/Button.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "HelpUI.h"
+#include "../Manager/Managers.h"
+#include "../Manager/UIManager.h"
+#include "../IslandOfDisasterGameModeBase.h"
 
 void UTitleUI::NativeConstruct()
 {
@@ -17,12 +21,13 @@ void UTitleUI::NativeConstruct()
 
 void UTitleUI::Start()
 {
-	UGameplayStatics::OpenLevel(this, TEXT("Play"));
+	UGameplayStatics::OpenLevel(this, TEXT("Play"), true, "?Game=/Game/Blueprints/GameMode/BP_GameMode.BP_GameMode_C");
 }
 
 void UTitleUI::Help()
 {
-
+	UManagers::Get(GetWorld())->UI()->ShowWidget(EWidgetType::Help);
+	IsHelpOpen = true;
 }
 
 void UTitleUI::Quit()

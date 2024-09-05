@@ -15,16 +15,32 @@ class ISLANDOFDISASTER_API UPlayerInfoUI : public UUserWidget
 	GENERATED_BODY()
 	
 public:
+	UFUNCTION()
+	void Init(int idx);
+	UFUNCTION()
+	void SetAllItem(UTexture2D* Texture);
+
+	UFUNCTION()
 	void SetHP(float MaxHP, float CurHP);
+	UFUNCTION()
 	void SetHunger(float MaxHunger, float CurHunger);
+	UFUNCTION()
 	void SetThirsty(float MaxThirsty, float CurThirsty);
+	UFUNCTION()
 	void SetTemperature(float MaxTemperature, float CurTemperature);
+	UFUNCTION()
 	void SetHumidity(float MaxHumidity, float CurHumidity);
+	
+	UFUNCTION()
 	void SetDays(int Days);
+	UFUNCTION()
 	void SetHours(int Hours, int Minutes);
 
+	UFUNCTION()
 	void ChangeInventorySelectItem(int LastIdx, int Idx);
+	UFUNCTION()
 	void ChangeInventoryItemTexture(int Idx, UTexture2D* Texture);
+	UFUNCTION()
 	void ChangeInventoryItemCnt(int Idx, FString Text);
 
 private:

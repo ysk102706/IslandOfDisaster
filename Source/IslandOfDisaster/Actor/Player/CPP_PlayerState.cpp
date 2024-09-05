@@ -12,23 +12,25 @@
 #include "../Item/Spawner.h"
 #include "EngineUtils.h"
 #include "../TimeOfDay.h"
+#include "Async/Async.h"
+#include "LevelSequenceActor.h"
+#include "LevelSequencePlayer.h"
+#include "Kismet/GameplayStatics.h"
+#include "../Item/Inventory.h"
 
 #define Max(a, b) a > b ? a : b
 #define Min(a, b) a < b ? a : b
 #define Increase(Type, Value) Cur##Type = Min(Cur##Type + Value, Max##Type);
 #define Decrease(Type, Value) Cur##Type = Max(Cur##Type - Value, 0);
 
-void ACPP_PlayerState::BeginPlay() {
-	Super::BeginPlay();
-
+void ACPP_PlayerState::BeginPlay() 
+{
 	Initialize();
 }
 
 void ACPP_PlayerState::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
-
-	if (isOnTimer) {
+	if (isOnTimer) { 
 		Timer += DeltaTime;
 		UManagers::Get(GetWorld())->TimeOfDay()->TimeToSunRotation(Hours, Timer / RealTimeSecondToInGameHour * 60);
 		if (Timer >= RealTimeSecondToInGameHour) {
@@ -37,12 +39,22 @@ void ACPP_PlayerState::Tick(float DeltaTime)
 			TemperatureAndHumidityUnit++;
 			Timer = 0;
 
+			if (Days == 8 && Hours == 9) {
+				TActorIterator<ALevelSequenceActor> It(GetWorld());
+				while (!(*It)->ActorHasTag("Die")) ++It;
+
+				(*It)->SequencePlayer->Play();
+
+				IsDieCutScene = true;
+				CutSceneTimer = 0;
+			}
+
 			Disaster->Effect1();
 			Disaster->Effect2();
 			Disaster->Effect3();
 
 			if (PhysiologicalPhenomenonUnit == 2) {
-				DecreaseHunger(5);
+				DecreaseHunger(10);
 				DecreaseThirsty(5);
 
 				PhysiologicalPhenomenonUnit = 0;
@@ -61,12 +73,24 @@ void ACPP_PlayerState::Tick(float DeltaTime)
 				Hours = 0;
 
 				for (auto Spawner : Spawners) {
-					if (Random(0, 1)) Spawner->Spawn();
+					if (!Random(0, 2)) {
+						Spawner->Spawn();
+						SpawnCnt++;
+						if (SpawnCnt >= Spawners.Num() / 2.5f) break;
+					}
 				}
 			}
 		}
-
 		StateApplyToUI();
+	}
+
+	if (IsDieCutScene) {
+		CutSceneTimer += DeltaTime;
+		if (CutSceneTimer >= 4.2f) {
+			IsDieCutScene = false;
+			CutSceneTimer = 0;
+			UGameplayStatics::OpenLevel(GetWorld(), TEXT("Title"));
+		}
 	}
 }
 
@@ -84,19 +108,22 @@ void ACPP_PlayerState::Initialize()
 	ChangeTemperature();
 	ChangeHumidity();
 
-	StateApplyToUI();
+	//StateApplyToUI();
 
 	StartTimer();
 
-	//UManagers::Get(GetWorld())->Disaster()->SetDisaster(EDisasterType(Random(0, 4)));
-	UManagers::Get(GetWorld())->Disaster()->SetDisaster(EDisasterType(4));
+	UManagers::Get(GetWorld())->Disaster()->SetDisaster(EDisasterType(Random(0, 4)));
 	
 	Disaster = UManagers::Get(GetWorld())->Disaster()->Disaster;
 
 	UWorld* World = GetWorld();
 	for (TActorIterator<ASpawner> It(World); It; ++It) {
 		Spawners.Add(*It);
-		if (Random(0, 1)) It->Spawn();
+		if (!Random(0, 2)) {
+			It->Spawn();
+			SpawnCnt++;
+			if (SpawnCnt >= Spawners.Num() / 2.5f) break;
+		}
 	}
 }
 
@@ -115,7 +142,7 @@ void ACPP_PlayerState::StartTimer()
 
 void ACPP_PlayerState::StateApplyToUI()
 {
-	auto PlayerInfoWidget = Cast<UPlayerInfoUI>(UManagers::Get(GetWorld())->UI()->GetWidget(EWidgetType::PlayerInfo));
+	TObjectPtr<UPlayerInfoUI> PlayerInfoWidget = Cast<UPlayerInfoUI>(UManagers::Get(GetWorld())->UI()->GetWidget(EWidgetType::PlayerInfo));
 	PlayerInfoWidget->SetHP(MaxHP, CurHP);
 	PlayerInfoWidget->SetHunger(MaxHunger, CurHunger);
 	PlayerInfoWidget->SetThirsty(MaxThirsty, CurThirsty);
@@ -123,6 +150,9 @@ void ACPP_PlayerState::StateApplyToUI()
 	PlayerInfoWidget->SetHumidity(MaxHumidity, CurHumidity);
 	PlayerInfoWidget->SetDays(Days);
 	PlayerInfoWidget->SetHours(Hours, Timer / RealTimeSecondToInGameHour * 60);
+	UManagers::Get(GetWorld())->UI()->HideWidget(EWidgetType::PlayerInfo);
+	UManagers::Get(GetWorld())->UI()->ShowWidget(EWidgetType::PlayerInfo);
+	PlayerInfoWidget->Init(UManagers::Get(GetWorld())->Player()->Inventory->GetSelectedItemIdx());
 }
 
 void ACPP_PlayerState::IncreaseHP(float Value)
@@ -153,6 +183,16 @@ void ACPP_PlayerState::IncreaseHumidity(float Value)
 void ACPP_PlayerState::DecreaseHP(float Value)
 {
 	Decrease(HP, Value);
+
+	if (CurHP <= 0) {
+		TActorIterator<ALevelSequenceActor> It(GetWorld());
+		while (!(*It)->ActorHasTag("Die")) ++It;
+
+		(*It)->SequencePlayer->Play();
+
+		IsDieCutScene = true;
+		CutSceneTimer = 0;
+	}
 }
 
 void ACPP_PlayerState::DecreaseHunger(float Value)
@@ -160,7 +200,7 @@ void ACPP_PlayerState::DecreaseHunger(float Value)
 	if (CurHunger > 0) {
 		Decrease(Hunger, Value);
 	}
-	else Decrease(HP, Value / 2);
+	else DecreaseHP(Value / 2);
 }
 
 void ACPP_PlayerState::DecreaseThirsty(float Value)
@@ -168,7 +208,7 @@ void ACPP_PlayerState::DecreaseThirsty(float Value)
 	if (CurThirsty > 0) {
 		Decrease(Thirsty, Value);
 	}
-	else Decrease(HP, Value / 2);
+	else DecreaseHP(Value / 2);
 }
 
 void ACPP_PlayerState::DecreaseTemperature(float Value)
@@ -188,15 +228,20 @@ void ACPP_PlayerState::ChangeTemperature()
 
 void ACPP_PlayerState::ChangeHumidity()
 {
-	CurHumidity = 65 + Random(0, 7) + AdditionalHumidity;
+	CurHumidity = 55 + Random(0, 7) + AdditionalHumidity;
 }
 
 void ACPP_PlayerState::ChangeAdditionalTemperature()
 {
-	AdditionalTemperature += Random(2, 3);
+	AdditionalTemperature += Random(5, 7);
 }
 
 void ACPP_PlayerState::ChangeAdditionalHumidity()
 {
-	AdditionalHumidity += Random(2, 4);
+	AdditionalHumidity += Random(4, 6);
+}
+
+void ACPP_PlayerState::OpenLevelDisaster()
+{
+	Disaster->OpenLevelDisaster();
 }

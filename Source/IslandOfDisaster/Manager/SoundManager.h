@@ -36,6 +36,8 @@ public:
 	void PlayLoopSound(ESound Type);
 	void StopLoopSound(ESound Type);
 
+	void SetSoundVolume(ESound Type, int Volume);
+
 	UPROPERTY(EditAnywhere, Category = Sound)
 	TObjectPtr<USoundBase> S_Construct;
 	UPROPERTY(EditAnywhere, Category = Sound)
@@ -54,7 +56,9 @@ public:
 	TObjectPtr<USoundBase> S_SignalFlare;
 
 private:
+	UPROPERTY()
 	TObjectPtr<UAudioComponent> AC_Wind;
+	UPROPERTY()
 	TObjectPtr<UAudioComponent> AC_Rain;
 	
 };

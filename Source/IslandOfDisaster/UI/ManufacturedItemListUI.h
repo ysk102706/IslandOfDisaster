@@ -16,6 +16,7 @@ class ISLANDOFDISASTER_API UManufacturedItemListUI : public UUserWidget
 	
 public:
 	virtual void NativeConstruct() override;
+	UFUNCTION()
 	void Init(UTexture2D* IMG, int Id, FString Name);
 
 	UFUNCTION()
