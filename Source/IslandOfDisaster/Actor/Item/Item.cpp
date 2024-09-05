@@ -5,6 +5,7 @@
 #include "../../Manager/Managers.h"
 #include "../../Manager/DataLoadManager.h"
 #include "../Player/CPP_Player.h"
+#include "../Player/CPP_PlayerState.h"
 #include "Spawner.h"
 #include "Inventory.h"
 
@@ -96,6 +97,7 @@ bool AItem::Picked()
 		if (Spawner) {
 			Spawner->IsSpawned = false;
 			Spawner->SpawnedActor = nullptr;
+			UManagers::Get(GetWorld())->Player()->GetController()->GetPlayerState<ACPP_PlayerState>()->SpawnCnt--;
 		}
 
 		return true;

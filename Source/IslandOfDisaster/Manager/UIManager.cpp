@@ -43,10 +43,5 @@ void UUIManager::ShowWidget(EWidgetType Type)
 void UUIManager::HideWidget(EWidgetType Type)
 {
 	UUserWidget* Object = GetWidget(Type);
-	if (Object) Object->RemoveFromParent();
-}
-
-void UUIManager::execAddManufacturedItem(UTexture2D* Texture, int Id, FString Name)
-{
-	Cast<UManufactureUI>(ManufactureObject)->AddManufacturedItem(Texture, Id, Name);
+	if (Object) Object->RemoveFromViewport();
 }

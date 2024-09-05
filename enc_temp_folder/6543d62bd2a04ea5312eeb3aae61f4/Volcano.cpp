@@ -8,11 +8,6 @@
 #include "../Player/CPP_Player.h"
 #include "../../Manager/FXManager.h"
 
-void AVolcano::OpenLevelDisaster()
-{
-	UGameplayStatics::OpenLevel(this, TEXT("Volcano"));
-}
-
 void AVolcano::BeginPlay()
 {
 	Super::BeginPlay();

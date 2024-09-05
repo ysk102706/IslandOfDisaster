@@ -76,7 +76,7 @@ void ACPP_PlayerState::Tick(float DeltaTime)
 					if (!Random(0, 2)) {
 						Spawner->Spawn();
 						SpawnCnt++;
-						if (SpawnCnt >= Spawners.Num() / 2.5f) break;
+						if (SpawnCnt >= Spawners.Num() / 2.25f) break;
 					}
 				}
 			}
@@ -122,7 +122,7 @@ void ACPP_PlayerState::Initialize()
 		if (!Random(0, 2)) {
 			It->Spawn();
 			SpawnCnt++;
-			if (SpawnCnt >= Spawners.Num() / 2.5f) break;
+			if (SpawnCnt >= Spawners.Num() / 2.25f) break;
 		}
 	}
 }
@@ -239,9 +239,4 @@ void ACPP_PlayerState::ChangeAdditionalTemperature()
 void ACPP_PlayerState::ChangeAdditionalHumidity()
 {
 	AdditionalHumidity += Random(4, 6);
-}
-
-void ACPP_PlayerState::OpenLevelDisaster()
-{
-	Disaster->OpenLevelDisaster();
 }

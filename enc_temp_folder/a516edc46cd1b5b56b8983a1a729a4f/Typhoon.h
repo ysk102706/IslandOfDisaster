@@ -4,24 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "Disaster.h"
-#include "Asteroid.generated.h"
+#include "Typhoon.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ISLANDOFDISASTER_API AAsteroid : public ADisaster
+class ISLANDOFDISASTER_API ATyphoon : public ADisaster
 {
 	GENERATED_BODY()
 	
 public:
-	virtual void OpenLevelDisaster() override;
-
 	virtual void Effect1() override;
 	virtual void Effect2() override;
 	virtual void Effect3() override;
 
 private:
-	bool IsLight;
+	int DarkPercent;
 
 };

@@ -18,7 +18,6 @@ class ISLANDOFDISASTER_API AEpidemic : public ADisaster
 	
 public:
 	virtual void BeginPlay() override;
-	virtual void OpenLevelDisaster() override;
 
 	virtual void Effect1() override;
 	virtual void Effect2() override;

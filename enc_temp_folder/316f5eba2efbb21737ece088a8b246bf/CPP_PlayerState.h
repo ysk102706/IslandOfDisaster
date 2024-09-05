@@ -42,8 +42,6 @@ public:
 	void ChangeAdditionalTemperature();
 	void ChangeAdditionalHumidity();
 
-	void OpenLevelDisaster();
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info)
 	float CurHP;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info)

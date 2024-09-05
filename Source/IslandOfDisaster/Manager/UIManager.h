@@ -27,8 +27,6 @@ public:
 	void ShowWidget(EWidgetType Type);
 	void HideWidget(EWidgetType Type);
 
-	void execAddManufacturedItem(UTexture2D* Texture, int Id, FString Name);
-
 	UPROPERTY(EditAnywhere, Category=Widget)
 	TSubclassOf<class UPlayerInfoUI> PlayerInfoWidget;
 	UPROPERTY(EditAnywhere, Category = Widget)

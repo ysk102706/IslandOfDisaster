@@ -4,11 +4,6 @@
 #include "DisasterManager.h"
 #include "../Actor/Disaster/Disaster.h"
 #include "Kismet/GameplayStatics.h"
-#include "../Actor/Disaster/Tsunami.h"
-#include "../Actor/Disaster/Volcano.h"
-#include "../Actor/Disaster/Epidemic.h"
-#include "../Actor/Disaster/Asteroid.h"
-#include "../Actor/Disaster/Typhoon.h"
 
 void UDisasterManager::SetDisaster(EDisasterType Type)
 {
@@ -35,4 +30,26 @@ void UDisasterManager::SetDisaster(EDisasterType Type)
 	}
 
 	Disaster = SelectedDisaster;
+	DisasterType = Type;
+}
+
+void UDisasterManager::StartCutScene()
+{
+	switch (DisasterType) {
+	case EDisasterType::Tsunami:
+		UGameplayStatics::OpenLevel(this, TEXT("Tsunami"));
+		break;
+	case EDisasterType::Volcano:
+		UGameplayStatics::OpenLevel(this, TEXT("Volcano"));
+		break;
+	case EDisasterType::Epidemic:
+		UGameplayStatics::OpenLevel(this, TEXT("Epidemic"));
+		break;
+	case EDisasterType::Asteroid:
+		UGameplayStatics::OpenLevel(this, TEXT("Asteroid"));
+		break;
+	case EDisasterType::Typhoon:
+		UGameplayStatics::OpenLevel(this, TEXT("Typhoon"));
+		break;
+	}
 }

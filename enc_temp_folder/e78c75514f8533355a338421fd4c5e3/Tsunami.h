@@ -4,24 +4,26 @@
 
 #include "CoreMinimal.h"
 #include "Disaster.h"
-#include "Asteroid.generated.h"
+#include "Tsunami.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ISLANDOFDISASTER_API AAsteroid : public ADisaster
+class ISLANDOFDISASTER_API ATsunami : public ADisaster
 {
 	GENERATED_BODY()
 	
 public:
-	virtual void OpenLevelDisaster() override;
-
 	virtual void Effect1() override;
 	virtual void Effect2() override;
 	virtual void Effect3() override;
 
-private:
-	bool IsLight;
+	UPROPERTY(EditAnywhere, Category = Spawn)
+	TArray<FVector> FishSpawnPos;
+	UPROPERTY(EditAnywhere, Category = Spawn)
+	TSubclassOf<AActor> Fish;
+	UPROPERTY(EditAnywhere, Category = Spawn)
+	float SpawnRange;
 
 };

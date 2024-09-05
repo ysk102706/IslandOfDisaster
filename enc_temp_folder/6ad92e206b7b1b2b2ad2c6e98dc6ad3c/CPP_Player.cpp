@@ -31,7 +31,6 @@
 #include "LevelSequencePlayer.h"
 #include "EngineUtils.h"
 #include "../../Manager/DisasterManager.h"
-#include "../Disaster/Disaster.h"
 
 ACPP_Player::ACPP_Player()
 {
@@ -87,8 +86,6 @@ void ACPP_Player::BeginPlay()
 	JumpEndTimer = 0;
 
 	UManagers::Get(GetWorld())->Sound()->Init(GetWorld());
-
-	IsAddManufacture = false;
 }
 
 void ACPP_Player::Tick(float DeltaTime)
@@ -131,7 +128,7 @@ void ACPP_Player::Tick(float DeltaTime)
 			IsCutScenePlay = false;
 			CutSceneTimer = 0;
 
-			GetController()->GetPlayerState<ACPP_PlayerState>()->OpenLevelDisaster();
+			UManagers::Get(GetWorld())->Disaster()->StartCutScene();
 		}
 	}
 }
@@ -198,9 +195,8 @@ void ACPP_Player::Manufacture(const FInputActionValue& Value)
 		IsOpenManufacture = !IsOpenManufacture;
 		if (IsOpenManufacture) {
 			UManagers::Get(GetWorld())->UI()->ShowWidget(EWidgetType::Manufacture);
-			if (!IsAddManufacture) {
+			if (I) {
 				UManagers::Get(GetWorld())->DataLoad()->LoadManufacturedItemList(GetWorld());
-				IsAddManufacture = true;
 			}
 			UManagers::Get(GetWorld())->DataLoad()->LoadSelectedManufacturedItem(GetWorld(), 1);
 			UManagers::Get(GetWorld())->DataLoad()->LoadIngredientItems(GetWorld(), 1);
@@ -280,6 +276,7 @@ void ACPP_Player::Escape(const FInputActionValue& Value)
 
 		TActorIterator<ALevelSequenceActor> It(GetWorld());
 		while (!(*It)->ActorHasTag(Tag)) ++It;
+
 		(*It)->SequencePlayer->Play();
 	}
 }

@@ -5,12 +5,6 @@
 #include "WaterBodyLakeActor.h"
 #include "EngineUtils.h"
 #include "Materials/MaterialInstance.h"
-#include "Kismet/GameplayStatics.h"
-
-void AEpidemic::OpenLevelDisaster()
-{
-	UGameplayStatics::OpenLevel(this, TEXT("Epidemic"));
-}
 
 void AEpidemic::BeginPlay()
 {

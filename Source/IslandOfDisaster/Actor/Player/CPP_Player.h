@@ -153,4 +153,6 @@ private:
 	bool IsCutScenePlay;
 	float CutSceneTimer;
 	float CutSceneTime;
+
+	bool IsAddManufacture;
 };

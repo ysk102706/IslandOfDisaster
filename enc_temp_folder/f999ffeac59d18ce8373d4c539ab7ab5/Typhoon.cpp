@@ -9,11 +9,6 @@
 #include "../../Manager/FXManager.h"
 #include "../../Manager/SoundManager.h"
 
-void ATyphoon::OpenLevelDisaster()
-{
-	UGameplayStatics::OpenLevel(this, TEXT("Typhoon"));
-}
-
 void ATyphoon::Effect1()
 {
 	Super::Effect1();

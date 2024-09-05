@@ -5,12 +5,6 @@
 #include "../Player/CPP_Player.h"
 #include "../../Manager/Managers.h"
 #include "../Weather.h"
-#include "Kismet/GameplayStatics.h"
-
-void ATsunami::OpenLevelDisaster()
-{
-	UGameplayStatics::OpenLevel(this, TEXT("Tsunami"));
-}
 
 void ATsunami::Effect1()
 {

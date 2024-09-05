@@ -15,8 +15,6 @@ class ISLANDOFDISASTER_API AAsteroid : public ADisaster
 	GENERATED_BODY()
 	
 public:
-	virtual void OpenLevelDisaster() override;
-
 	virtual void Effect1() override;
 	virtual void Effect2() override;
 	virtual void Effect3() override;

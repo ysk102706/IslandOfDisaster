@@ -5,6 +5,7 @@
 #include "Spawner.h"
 #include "../../Manager/Managers.h"
 #include "../Player/CPP_Player.h"
+#include "../Player/CPP_PlayerState.h"
 #include "../Item/Inventory.h"
 #include "../../Manager/DataLoadManager.h"
 
@@ -70,6 +71,7 @@ void AMultipleItem::Picked()
 
 	Spawner->IsSpawned = false;
 	Spawner->SpawnedActor = nullptr;
+	UManagers::Get(GetWorld())->Player()->GetController()->GetPlayerState<ACPP_PlayerState>()->SpawnCnt--;
 
 	DestroyActor();
 }

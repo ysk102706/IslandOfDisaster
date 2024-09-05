@@ -5,12 +5,6 @@
 #include "../../Manager/Managers.h"
 #include "../../Manager/FXManager.h"
 #include "../TimeOfDay.h"
-#include "Kismet/GameplayStatics.h"
-
-void AAsteroid::OpenLevelDisaster()
-{
-	UGameplayStatics::OpenLevel(this, TEXT("Asteroid"));
-}
 
 void AAsteroid::Effect1()
 {

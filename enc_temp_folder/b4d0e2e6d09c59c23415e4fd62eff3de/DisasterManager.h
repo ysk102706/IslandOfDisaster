@@ -26,6 +26,7 @@ class ISLANDOFDISASTER_API UDisasterManager : public UObject
 	
 public:
 	void SetDisaster(EDisasterType Type);
+	void StartCutScene();
 
 	UPROPERTY(EditAnywhere, Category = Disaster)
 	TSubclassOf<ADisaster> Tsunami;
@@ -40,5 +41,6 @@ public:
 
 	UPROPERTY()
 	ADisaster* Disaster;
+	EDisasterType DisasterType;
 
 };
