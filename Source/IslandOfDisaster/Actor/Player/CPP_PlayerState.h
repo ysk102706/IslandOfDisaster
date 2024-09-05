@@ -15,8 +15,8 @@ class ISLANDOFDISASTER_API ACPP_PlayerState : public APlayerState
 	GENERATED_BODY()
 	
 public:
-	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
+	void BeginPlay();
+	void Tick(float DeltaTime);
 	
 	void Initialize();
 	int Random(int MinInclusive, int MaxInclusive);
@@ -80,8 +80,10 @@ public:
 	int AdditionalTemperature;
 	int AdditionalHumidity;
 
+	UPROPERTY()
 	TArray<TObjectPtr<class ASpawner>> Spawners;
 
+	UPROPERTY()
 	TObjectPtr<class ADisaster> Disaster;
 
 private:

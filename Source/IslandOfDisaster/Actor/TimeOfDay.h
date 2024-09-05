@@ -20,13 +20,18 @@ public:
 	void NightLighting();
 
 	void ReRender(ULightComponent& Component);
-
+	
+	UPROPERTY()
 	TObjectPtr<class ADirectionalLight> SunLight;
+	UPROPERTY()
 	TObjectPtr<class ADirectionalLight> MoonLight;
 
+	UPROPERTY()
 	TObjectPtr<class APostProcessVolume> PostProcessVolume;
 
+	UPROPERTY()
 	TObjectPtr<UStaticMeshComponent> SM_Center;
+	UPROPERTY()
 	TObjectPtr<UStaticMeshComponent> SM_Moon;
 
 private:

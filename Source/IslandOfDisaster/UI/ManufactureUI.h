@@ -22,14 +22,19 @@ class ISLANDOFDISASTER_API UManufactureUI : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 
+	UFUNCTION()
 	void AddManufacturedItem(UTexture2D* Texture, int Id, FString Name);
+	UFUNCTION()
 	void SelectManufacturedItem(UTexture2D* Texture, int Id, FString Name, FString Description);
+	UFUNCTION()
 	void ResetIngredientItemList();
+	UFUNCTION()
 	void AddIngredientItem(UTexture2D* Texture, FString Name, FString Description, int Count);
 
 	UFUNCTION()
 	void Manufacture();
 	
+	UFUNCTION()
 	void SetIsManufacture(bool Value);
 
 	UPROPERTY(EditAnywhere, Category=Widget)
@@ -64,7 +69,9 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UButton* BManufacture;
 
+	UPROPERTY()
 	TArray<class UHorizontalBox*> ManufacturedItemHorizontalBoxs;
+	UPROPERTY()
 	TArray<class UHorizontalBox*> IngredientItemHorizontalBoxs;
 	TArray<IngredientItemData> Ingredients;
 

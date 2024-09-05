@@ -43,7 +43,9 @@ private:
 	UPROPERTY()
 	TObjectPtr<UMaterialInstanceDynamic> DMI;
 
+	UPROPERTY()
 	FLinearColor CurrentRayleighScattering;
+	UPROPERTY()
 	FLinearColor TargetRayleighScattering;
 
 	float CurrentExposureCompensationValue;

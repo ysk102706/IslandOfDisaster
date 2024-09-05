@@ -42,6 +42,9 @@ public:
 
 	static UManagers* Get(const UWorld* World);
 
+	UPROPERTY()
+	TArray<TObjectPtr<AActor>> SpawnedItems;
+
 private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUIManager> UIManagerClass;

@@ -16,23 +16,21 @@
 #include "LevelSequenceActor.h"
 #include "LevelSequencePlayer.h"
 #include "Kismet/GameplayStatics.h"
+#include "../Item/Inventory.h"
 
 #define Max(a, b) a > b ? a : b
 #define Min(a, b) a < b ? a : b
 #define Increase(Type, Value) Cur##Type = Min(Cur##Type + Value, Max##Type);
 #define Decrease(Type, Value) Cur##Type = Max(Cur##Type - Value, 0);
 
-void ACPP_PlayerState::BeginPlay() {
-	Super::BeginPlay();
-
+void ACPP_PlayerState::BeginPlay() 
+{
 	Initialize();
 }
 
 void ACPP_PlayerState::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
-
-	if (isOnTimer) {
+	if (isOnTimer) { 
 		Timer += DeltaTime;
 		UManagers::Get(GetWorld())->TimeOfDay()->TimeToSunRotation(Hours, Timer / RealTimeSecondToInGameHour * 60);
 		if (Timer >= RealTimeSecondToInGameHour) {
@@ -79,7 +77,6 @@ void ACPP_PlayerState::Tick(float DeltaTime)
 				}
 			}
 		}
-
 		StateApplyToUI();
 	}
 
@@ -107,7 +104,7 @@ void ACPP_PlayerState::Initialize()
 	ChangeTemperature();
 	ChangeHumidity();
 
-	StateApplyToUI();
+	//StateApplyToUI();
 
 	StartTimer();
 
@@ -137,7 +134,7 @@ void ACPP_PlayerState::StartTimer()
 
 void ACPP_PlayerState::StateApplyToUI()
 {
-	auto PlayerInfoWidget = Cast<UPlayerInfoUI>(UManagers::Get(GetWorld())->UI()->GetWidget(EWidgetType::PlayerInfo));
+	TObjectPtr<UPlayerInfoUI> PlayerInfoWidget = Cast<UPlayerInfoUI>(UManagers::Get(GetWorld())->UI()->GetWidget(EWidgetType::PlayerInfo));
 	PlayerInfoWidget->SetHP(MaxHP, CurHP);
 	PlayerInfoWidget->SetHunger(MaxHunger, CurHunger);
 	PlayerInfoWidget->SetThirsty(MaxThirsty, CurThirsty);
@@ -145,6 +142,9 @@ void ACPP_PlayerState::StateApplyToUI()
 	PlayerInfoWidget->SetHumidity(MaxHumidity, CurHumidity);
 	PlayerInfoWidget->SetDays(Days);
 	PlayerInfoWidget->SetHours(Hours, Timer / RealTimeSecondToInGameHour * 60);
+	UManagers::Get(GetWorld())->UI()->HideWidget(EWidgetType::PlayerInfo);
+	UManagers::Get(GetWorld())->UI()->ShowWidget(EWidgetType::PlayerInfo);
+	PlayerInfoWidget->Init(UManagers::Get(GetWorld())->Player()->Inventory->GetSelectedItemIdx());
 }
 
 void ACPP_PlayerState::IncreaseHP(float Value)

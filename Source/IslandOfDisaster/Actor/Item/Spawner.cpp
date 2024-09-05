@@ -42,6 +42,7 @@ void ASpawner::Spawn()
 			auto MultiItem = Cast<AMultipleItem>(GetWorld()->SpawnActor(MultiItems[Idx], &Pos, &Rot));
 
 			MultiItem->Spawner = this;
+			UManagers::Get(GetWorld())->SpawnedItems.Add(MultiItem);
 		}
 		IsSpawned = true;
 	}

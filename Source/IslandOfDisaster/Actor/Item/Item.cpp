@@ -148,7 +148,6 @@ void AItem::ConstructPoint(bool Value)
 
 void AItem::DestroyActor()
 {
-	RemoveFromRoot();
 	Destroy();
 }
 

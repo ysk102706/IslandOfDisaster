@@ -41,9 +41,11 @@ public:
 	UPROPERTY(EditAnywhere, Category = MeshType)
 	int MeshType;
 
+	UPROPERTY()
 	TObjectPtr<ASpawner> Spawner;
 
 private:
+	UPROPERTY()
 	TObjectPtr<UMeshComponent> Mesh;
 
 	bool IsFocused;

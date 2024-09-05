@@ -29,6 +29,7 @@ public:
 
 
 	bool IsSpawned;
+	UPROPERTY()
 	TObjectPtr<AActor> SpawnedActor;
 
 	bool IsOnceSpawn;

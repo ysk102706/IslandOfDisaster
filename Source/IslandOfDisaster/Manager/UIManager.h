@@ -22,9 +22,12 @@ class ISLANDOFDISASTER_API UUIManager : public UObject
 	GENERATED_BODY()
 	
 public:
+	UFUNCTION()
 	UUserWidget* GetWidget(EWidgetType Type);
 	void ShowWidget(EWidgetType Type);
 	void HideWidget(EWidgetType Type);
+
+	void execAddManufacturedItem(UTexture2D* Texture, int Id, FString Name);
 
 	UPROPERTY(EditAnywhere, Category=Widget)
 	TSubclassOf<class UPlayerInfoUI> PlayerInfoWidget;

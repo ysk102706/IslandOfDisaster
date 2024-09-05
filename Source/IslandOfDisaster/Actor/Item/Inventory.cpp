@@ -40,7 +40,7 @@ bool AInventory::AddItem(TObjectPtr<AItem> Item)
 		if (Contents[i][0]) {
 			if (Contents[i][0]->Name == Item->Name) {
 				Contents[i].Add(Item);
-				if (auto Widget = Cast<UPlayerInfoUI>(UManagers::Get(World)->UI()->GetWidget(EWidgetType::PlayerInfo))) {
+				if (TObjectPtr<UPlayerInfoUI> Widget = Cast<UPlayerInfoUI>(UManagers::Get(World)->UI()->GetWidget(EWidgetType::PlayerInfo))) {
 					Widget->ChangeInventoryItemCnt(i, FString::Printf(TEXT("%d"), Contents[i].Num()));
 					(*ContentMap->Find(Item->Name))++;
 				}
@@ -52,7 +52,7 @@ bool AInventory::AddItem(TObjectPtr<AItem> Item)
 	for (int i = 0; i < 7; i++) {
 		if (!Contents[i][0]) {
 			Contents[i][0] = Item;
-			if (auto Widget = Cast<UPlayerInfoUI>(UManagers::Get(World)->UI()->GetWidget(EWidgetType::PlayerInfo))) {
+			if (TObjectPtr<UPlayerInfoUI> Widget = Cast<UPlayerInfoUI>(UManagers::Get(World)->UI()->GetWidget(EWidgetType::PlayerInfo))) {
 				Widget->ChangeInventoryItemTexture(i, Item->Texture);
 				Widget->ChangeInventoryItemCnt(i, "1");
 				ContentMap->Add(Item->Name, 1);
@@ -92,7 +92,7 @@ void AInventory::DropItem()
 
 void AInventory::SelectItem(int Idx)
 {
-	if (auto Widget = Cast<UPlayerInfoUI>(UManagers::Get(World)->UI()->GetWidget(EWidgetType::PlayerInfo))) {
+	if (TObjectPtr<UPlayerInfoUI> Widget = Cast<UPlayerInfoUI>(UManagers::Get(World)->UI()->GetWidget(EWidgetType::PlayerInfo))) {
 		Widget->ChangeInventorySelectItem(SelectedItemIdx, Idx);
 	}
 	
@@ -140,7 +140,7 @@ void AInventory::SetNoneItemTexture(UTexture2D* Texture)
 
 void AInventory::SetInventoryUI(int Idx, TArray<TObjectPtr<AItem>>& Items)
 {
-	auto Widget = Cast<UPlayerInfoUI>(UManagers::Get(World)->UI()->GetWidget(EWidgetType::PlayerInfo));
+	TObjectPtr<UPlayerInfoUI> Widget = Cast<UPlayerInfoUI>(UManagers::Get(World)->UI()->GetWidget(EWidgetType::PlayerInfo));
 	if (Widget) Widget->ChangeInventoryItemCnt(Idx, !Items.Num() ? "" : FString::Printf(TEXT("%d"), Items.Num()));
 	if (!Items.Num()) {
 		Items.Add(nullptr);
@@ -196,4 +196,9 @@ void AInventory::Consume(FString Name, int Count)
 TObjectPtr<AItem> AInventory::GetSelectedItem()
 {
 	return Contents[SelectedItemIdx][0];
+}
+
+int AInventory::GetSelectedItemIdx()
+{
+	return SelectedItemIdx;
 }

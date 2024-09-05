@@ -53,6 +53,8 @@ void ACPP_Player::BeginPlay()
 {
 	Super::BeginPlay();
 
+	GetController()->GetPlayerState<ACPP_PlayerState>()->BeginPlay();
+
 	UManagers::Get(GetWorld())->SetPlayer(this);
 
 	SetActorLocation(FVector(62250.0, 40000.0, 990));
@@ -62,8 +64,6 @@ void ACPP_Player::BeginPlay()
 	Inventory->SetWorld(GetWorld());
 	Inventory->SetNoneItemTexture(NoneItemTexture);
 	Inventory->SelectItem(0);
-
-	UManagers::Get(GetWorld())->DataLoad()->LoadManufacturedItemList(GetWorld());
 
 	CQP.AddIgnoredActor(this->GetOwner());
 
@@ -76,7 +76,7 @@ void ACPP_Player::BeginPlay()
 	}
 
 	UManagers::Get(GetWorld())->UI()->ShowWidget(EWidgetType::PlayerInfo);
-	Cast<UPlayerInfoUI>(UManagers::Get(GetWorld())->UI()->GetWidget(EWidgetType::PlayerInfo))->Init();
+	Cast<UPlayerInfoUI>(UManagers::Get(GetWorld())->UI()->GetWidget(EWidgetType::PlayerInfo))->Init(0);
 	Cast<UPlayerInfoUI>(UManagers::Get(GetWorld())->UI()->GetWidget(EWidgetType::PlayerInfo))->SetAllItem(NoneItemTexture);
 
 	UManagers::Get(GetWorld())->FX()->SpawnFX(GetWorld(), EFXType::FX_Star, FVector(0, 0, 0));
@@ -213,6 +213,7 @@ void ACPP_Player::Manufacture(const FInputActionValue& Value)
 		IsOpenManufacture = !IsOpenManufacture;
 		if (IsOpenManufacture) {
 			UManagers::Get(GetWorld())->UI()->ShowWidget(EWidgetType::Manufacture);
+			UManagers::Get(GetWorld())->DataLoad()->LoadManufacturedItemList(GetWorld());
 			UManagers::Get(GetWorld())->DataLoad()->LoadSelectedManufacturedItem(GetWorld(), 1);
 			UManagers::Get(GetWorld())->DataLoad()->LoadIngredientItems(GetWorld(), 1);
 		}

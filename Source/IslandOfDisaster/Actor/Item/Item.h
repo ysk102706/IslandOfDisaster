@@ -45,8 +45,10 @@ public:
 	UPROPERTY(EditAnywhere)
 	FString ConstructAvailablePlaceName;
 
+	UPROPERTY()
 	TObjectPtr<UTexture2D> Texture;
 
+	UPROPERTY()
 	TObjectPtr<ASpawner> Spawner;
 
 	FString Name;
@@ -61,6 +63,7 @@ public:
 	bool IsConstructPoint;
 
 private:
+	UPROPERTY()
 	TObjectPtr<UStaticMeshComponent> Mesh;
 
 	bool IsFocused;

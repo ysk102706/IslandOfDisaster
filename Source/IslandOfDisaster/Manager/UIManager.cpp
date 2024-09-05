@@ -7,11 +7,11 @@
 #include "../UI/TitleUI.h"
 #include "../UI/HelpUI.h"
 
-#define CreateOrSetWidget(Object, Type) \
+#define CreateOrSetWidget(WidgetObject, Type) \
 	if (!Type##Object) {\
 		Type##Object = CreateWidget<U##Type##UI>(GetWorld(), Type##Widget); \
 	}\
-	Object = Type##Object; \
+	WidgetObject = Type##Object; \
 
 UUserWidget* UUIManager::GetWidget(EWidgetType Type) {
 	UUserWidget* Object = nullptr;
@@ -44,4 +44,9 @@ void UUIManager::HideWidget(EWidgetType Type)
 {
 	UUserWidget* Object = GetWidget(Type);
 	if (Object) Object->RemoveFromParent();
+}
+
+void UUIManager::execAddManufacturedItem(UTexture2D* Texture, int Id, FString Name)
+{
+	Cast<UManufactureUI>(ManufactureObject)->AddManufacturedItem(Texture, Id, Name);
 }

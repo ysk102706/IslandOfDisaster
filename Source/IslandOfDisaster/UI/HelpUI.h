@@ -24,7 +24,9 @@ public:
 	UFUNCTION()
 	void Close();
 
+	UFUNCTION()
 	void SetPage();
+	UFUNCTION()
 	void SetHelpImage();
 
 	UPROPERTY(EditAnywhere, Category=Image)

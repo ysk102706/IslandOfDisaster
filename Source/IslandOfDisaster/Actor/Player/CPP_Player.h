@@ -116,18 +116,26 @@ public:
 	TSubclassOf<class ULegacyCameraShake> CameraShake;
 
 	UPROPERTY()
-	TObjectPtr<AInventory> Inventory;
+	TObjectPtr<AInventory> Inventory; 
+
+	UPROPERTY(EditAnywhere, Category=GameMode)
+	TSubclassOf<class AIslandOfDisasterGameModeBase> GameMode;
 
 	bool IsJumpStart;
 	bool IsJumping;
 	bool IsJumpEnd;
 
+	void StopSun();
+
 private:
 	void ConstructCheckRayCastAction(FHitResult& Hit);
 
+	UPROPERTY()
 	TObjectPtr<class UCameraComponent> PlayerCamera;
 
+	UPROPERTY()
 	TObjectPtr<AItem> FocusedItem;
+	UPROPERTY()
 	TObjectPtr<AMultipleItem> FocusedMultipleItem;
 
 	bool IsOpenManufacture;

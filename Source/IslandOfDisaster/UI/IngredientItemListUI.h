@@ -15,6 +15,7 @@ class ISLANDOFDISASTER_API UIngredientItemListUI : public UUserWidget
 	GENERATED_BODY()
 	
 public:
+	UFUNCTION()
 	void Init(UTexture2D* Texture, FString Name, FString Description, int Count);
 
 private:

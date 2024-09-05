@@ -38,6 +38,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = Disaster)
 	TSubclassOf<ADisaster> Typhoon;
 
+	UPROPERTY()
 	ADisaster* Disaster;
 	EDisasterType DisasterType;
 
