@@ -73,10 +73,10 @@ void ACPP_PlayerState::Tick(float DeltaTime)
 				Hours = 0;
 
 				for (auto Spawner : Spawners) {
-					if (!Random(0, 2)) {
+					if (Random(0, 1)) {
 						Spawner->Spawn();
 						SpawnCnt++;
-						if (SpawnCnt >= Spawners.Num() / 2.5f) break;
+						if (SpawnCnt >= Spawners.Num() / 2.25f) break;
 					}
 				}
 			}
@@ -119,10 +119,9 @@ void ACPP_PlayerState::Initialize()
 	UWorld* World = GetWorld();
 	for (TActorIterator<ASpawner> It(World); It; ++It) {
 		Spawners.Add(*It);
-		if (!Random(0, 2)) {
+		if (SpawnCnt < 30000 && Random(0, 1)) {
 			It->Spawn();
 			SpawnCnt++;
-			if (SpawnCnt >= Spawners.Num() / 2.5f) break;
 		}
 	}
 }
